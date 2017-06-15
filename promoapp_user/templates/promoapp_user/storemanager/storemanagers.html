@@ -1,0 +1,44 @@
+{% extends 'table.html' %}
+
+{% block header%}
+<h1>
+    Usuarios
+</h1>
+{% endblock %}
+
+{% block section %} <li><a href="/users">Usuarios</a></li> {% endblock %}
+{% block subsection %} <li class="active">Encargados de Tiendas</li> {% endblock %}
+
+{% block table_title %}
+    <h3 class="box-title">Encargados de Tiendas</h3>
+{% endblock %}
+
+{% block table_header %}
+    <th>Usuario</th>
+    <th>Nombre</th>
+    <th>Apellido</th>
+    <th>Email</th>
+    <th>Estado</th>
+{% endblock %}
+                    
+{% block table_body %}    
+    {% for u in users %}
+        <td>{{ u.user.username }}</td>
+        <td>{{ u.user.first_name }}</td>
+        <td>{{ u.user.last_name }}</td>
+        <td>{{ u.user.email }}</td>
+        {% if u.is_active %}
+            <td>Activo</td>
+        {% else %}
+            <td>Inactivo</td>
+        {% endif %}
+    {% endfor %}
+{% endblock %}
+               
+{% block table_footer %}
+    <th>Usuario</th>
+    <th>Nombre</th>
+    <th>Apellido</th>
+    <th>Email</th>
+    <th>Estado</th>
+{% endblock %}

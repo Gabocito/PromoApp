@@ -1,0 +1,47 @@
+
+
+{% block content %}
+  {% load rest_framework %}
+  {% load static %} 
+  <script src = {% static "js/facebook.js" %}></script>
+  <script src = {% static "js/google.js" %}></script>
+
+  <h1>Login</h1>
+
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Login</button>
+  </form>
+
+  <br>
+  <script>
+    var finished_rendering = function() {
+    console.log("finished rendering plugins");
+    var spinner = document.getElementById("spinner");
+    spinner.removeAttribute("style");
+    spinner.removeChild(spinner.childNodes[0]);
+    }
+    FB.Event.subscribe('xfbml.render', finished_rendering);
+  </script>
+  <div id="spinner"
+      style="
+          background: #4267b2;
+          border-radius: 5px;
+          color: white;
+          height: 40px;
+          text-align: center;
+          width: 250px;">
+      Loading
+      <div
+      class="fb-login-button"
+      data-max-rows="1"
+      data-size="large"
+      data-button-type="continue_with"
+      ></div>
+  </div>
+  <br>
+  <div class="g-signin2" data-onsuccess="onSignIn"></div>
+  <!-- <a href="#" onclick="signOut();">Sign out</a> -->
+
+{% endblock %}
