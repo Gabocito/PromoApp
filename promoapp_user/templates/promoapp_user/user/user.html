@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+    <form role="form">
+      <div class="box-body">
+        <div class="form-group">
+          <label>Usuario</label>
+          <input type="text" class="form-control" value="{{ user.username }}" disabled>
+        </div>
+        <div class="form-group">
+          <label>Email</label>
+          <input type="email" class="form-control" value="{{ user.email }}" disabled>
+        </div>
+        <div class="form-group">
+          <label>Nombre</label>
+          <input type="text" class="form-control" value="{{ user.first_name }}" disabled>
+        </div>
+        <div class="form-group">
+          <label>Apellido</label>
+          <input type="text" class="form-control" value="{{ user.last_name }}" disabled>
+        </div>
+        <div class="form-group">
+          <label>Tipo de Cuenta</label>
+          <input type="text" class="form-control" value="{{ user.acc_type }}" disabled>
+        </div>
+      </div>
+      <!-- /.box-body -->
+    </form>
+
+{% endblock %}

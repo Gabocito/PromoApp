@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+    <form role="form" action="{% url 'promotionmanagers' %}" method="post">
+      {% csrf_token %}
+      <div class="box-body">
+        {{ form.non_field_errors }}
+        <div class="form-group">
+          {{ form.username.errors }}
+          <label for="{{ form.username.id_for_label }}">Usuario</label>
+          {{ form.username }}
+        </div>
+        <div class="form-group">
+          {{ form.email.errors }}
+          <label for="{{ form.email.id_for_label }}">Email</label>
+          {{ form.email }}
+        </div>
+        <div class="form-group">
+          {{ form.password.errors }}
+          <label for="{{ form.password.id_for_label }}">Password</label>
+          {{ form.password }}
+        </div>
+      </div>
+      <!-- /.box-body -->
+
+      <div class="box-footer">
+        <button type="submit" class="btn btn-primary">Crear</button>
+      </div>
+    </form>
+
+    <script>
+      $(document).ready(function(){
+        $('input').addClass('form-control');
+        $('#id_username').attr("placeholder", "Usuario");
+        $('#id_email').attr("placeholder", "Email");
+        $('#id_password').attr("placeholder", "Password");
+      });
+    </script>
+
+
+{% endblock %}

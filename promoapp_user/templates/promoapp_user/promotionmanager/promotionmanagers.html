@@ -11,6 +11,7 @@
 
 {% block table_title %}
     <h3 class="box-title">Encargados de Promociones</h3>
+    <a href="new" class="btn btn-default" style="float:right"><i class="fa fa-plus"></i> Crear</a>
 {% endblock %}
 
 {% block table_header %}
@@ -23,14 +24,14 @@
                     
 {% block table_body %}    
     {% for u in users %}
-        <td>{{ u.user.username }}</td>
+        <td><a href="{{ u.pk }}">{{ u.user.username }}</a></td>
         <td>{{ u.user.first_name }}</td>
         <td>{{ u.user.last_name }}</td>
         <td>{{ u.user.email }}</td>
         {% if u.is_active %}
-            <td>Activo</td>
+            <td><i class="fa fa-check"></i></td>
         {% else %}
-            <td>Inactivo</td>
+            <td><i class="fa fa-close"></i></td>
         {% endif %}
     {% endfor %}
 {% endblock %}

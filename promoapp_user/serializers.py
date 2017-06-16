@@ -5,14 +5,6 @@ from .models import *
 from django.contrib.auth.models import User as django_User
 
 # *****************************************************************************
-# **********************            LOGIN            **************************
-# *****************************************************************************
-class LoginSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = django_User
-        fields = ('username', 'password')
-
-# *****************************************************************************
 # **********************          DETAILS           ***************************
 # *****************************************************************************
 class DjangoUserSerializer(serializers.ModelSerializer):
@@ -25,28 +17,28 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ('user', 'user_type', 'acc_type')
+        fields = ('user', 'acc_type', 'pk')
 
 class StoreManagerSerializer(serializers.ModelSerializer):
     user = DjangoUserSerializer()
 
     class Meta:
         model = StoreManager
-        fields = ('user', 'acc_type')
+        fields = ('user', 'is_active', 'pk')
 
 class PromotionManagerSerializer(serializers.ModelSerializer):
     user = DjangoUserSerializer()
 
     class Meta:
         model = PromotionManager
-        fields = ('user', 'acc_type')
+        fields = ('user', 'is_active', 'pk')
 
 class AdminSerializer(serializers.ModelSerializer):
     user = DjangoUserSerializer()
 
     class Meta:
         model = Admin
-        fields = ('user', 'user_type')
+        fields = ('user', 'pk')
 
 # *****************************************************************************
 # **********************            CREATE           **************************
@@ -54,7 +46,7 @@ class AdminSerializer(serializers.ModelSerializer):
 class DjangoUserCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = django_User
-        fields = ('first_name', 'password', 'email')
+        fields = ('username', 'email', 'password')
 
 class UserCreateSerializer(serializers.ModelSerializer):
     user = DjangoUserCreateSerializer()

@@ -7,45 +7,12 @@ from serializers import *
 
 from models import *
 
+from forms import *
+
 from django.contrib.auth.models import User as django_User
 from django.shortcuts import get_object_or_404
 from django.db.models import Max
-
-# # *****************************************************************************
-# # **********************            LOGIN            **************************
-# # *****************************************************************************
-# class Login(APIView):
-#     renderer_classes = [TemplateHTMLRenderer]
-#     template_name = 'promoapp_user/login.html'
-
-#     def get(self, request):        
-#         serializer = LoginSerializer()
-#         return Response({'serializer': serializer})
-
-#     def post(self, request):
-#         data = {
-#             'username': request.POST['username'],
-#             'password': request.POST['password']
-#         }
-#         serializer = LoginSerializer(request.POST, data=data)
-
-#         if not serializer.is_valid(): 
-#             return Response(serializer.errors, 
-#                             status=status.HTTP_400_BAD_REQUEST)
-#         serializer.save()
-#         data = serializer.data
-#         try:
-#             user = django_User.objects.get(email__exact=data['email'])
-#             if user.check_password(data['password']):
-#                 return redirect('promoapp_user/home.html')
-#             else:
-#                 data = {'error': 'The password is incorrect!'}
-#                 return Response(data, 
-#                             status=status.HTTP_400_BAD_REQUEST)
-#         except:
-#             data = {'error': 'User does not exist!'}
-#             return Response(data, 
-#                             status=status.HTTP_400_BAD_REQUEST)
+from django.http import Http404
 
 # *****************************************************************************
 # **********************            INDEX            **************************
@@ -57,10 +24,13 @@ class Index(APIView):
     def get(self, request):        
         return Response({'index': 'It Works!'})
 
-
 # *****************************************************************************
 # **********************         CREATE/LIST        ***************************
 # *****************************************************************************
+
+# """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+# """                               User                                    """
+# """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 class UserListCreate(APIView):
     renderer_classes = [TemplateHTMLRenderer]
     template_name = 'promoapp_user/user/users.html'
@@ -89,11 +59,20 @@ class UserListCreate(APIView):
         u.set_password(data['user']['password']) 
         u.save()
 
-        c = User.objects.create(user=u)
-        c.acc_type = data['acc_type']
-        c.save()
+        c = User.objects.create(user=u, acc_type=data['acc_type'])
 
         return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+# """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+# """                          Store Manager                                """
+# """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+class StoreManagerFormCreate(APIView):
+    renderer_classes = [TemplateHTMLRenderer]
+    template_name = 'promoapp_user/storemanager/form.html'
+
+    def get(self, request, format=None):
+        form = StoreManagerForm()
+        return Response({'form': form})
 
 class StoreManagerListCreate(APIView):
     renderer_classes = [TemplateHTMLRenderer]
@@ -105,8 +84,18 @@ class StoreManagerListCreate(APIView):
         serializer = StoreManagerSerializer(storemanagers, many=True)
         return Response({'users': serializer.data})
 
-    def post(self, request): 
-        serializer = StoreManagerCreateSerializer(data=request.data)
+    def post(self, request):
+        form = StoreManagerForm(request.POST)
+        if form.is_valid():
+            data = {
+                'user': {
+                    'username': form.cleaned_data['username'],
+                    'email': form.cleaned_data['email'],
+                    'password': form.cleaned_data['password']
+                },
+                'is_active': True
+            }
+            serializer = StoreManagerCreateSerializer(data=data)
 
         # Check format and unique constraint 
         if not serializer.is_valid(): 
@@ -115,12 +104,24 @@ class StoreManagerListCreate(APIView):
 
         data = serializer.data 
         u = django_User.objects.create(username=data['user']['username']) 
-        u.set_password(data['user']['password']) 
+        u.set_password(data['user']['password'])
+        u.email = data['user']['email']
         u.save()
 
-        c = StoreManager.objects.create(user=u)
+        s = StoreManager.objects.create(user=u, is_active=data['is_active'])
 
         return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+# """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+# """                         Promotion Manager                             """
+# """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+class PromotionManagerFormCreate(APIView):
+    renderer_classes = [TemplateHTMLRenderer]
+    template_name = 'promoapp_user/promotionmanager/form.html'
+
+    def get(self, request, format=None):
+        form = PromotionManagerForm()
+        return Response({'form': form})
 
 class PromotionManagerListCreate(APIView):
     renderer_classes = [TemplateHTMLRenderer]
@@ -133,7 +134,17 @@ class PromotionManagerListCreate(APIView):
         return Response({'users': serializer.data})
 
     def post(self, request): 
-        serializer = PromotionManagerCreateSerializer(data=request.data)
+        form = PromotionManagerForm(request.POST)
+        if form.is_valid():
+            data = {
+                'user': {
+                    'username': form.cleaned_data['username'],
+                    'email': form.cleaned_data['email'],
+                    'password': form.cleaned_data['password']
+                },
+                'is_active': True
+            }
+            serializer = PromotionManagerCreateSerializer(data=data)
 
         # Check format and unique constraint 
         if not serializer.is_valid(): 
@@ -142,13 +153,17 @@ class PromotionManagerListCreate(APIView):
 
         data = serializer.data 
         u = django_User.objects.create(username=data['user']['username']) 
-        u.set_password(data['user']['password']) 
+        u.set_password(data['user']['password'])
+        u.email = data['user']['email']
         u.save()
 
-        c = PromotionManager.objects.create(user=u)
+        s = PromotionManager.objects.create(user=u, is_active=data['is_active'])
 
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
+# """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+# """                             Admin                                     """
+# """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 class AdminListCreate(APIView):
     """ List all admins """
     def get(self, request, format=None):
@@ -156,27 +171,17 @@ class AdminListCreate(APIView):
         serializer = AdminSerializer(admins, many=True)
         return Response({'users': serializer.data})
 
-    def post(self, request): 
-        serializer = AdminCreateSerializer(data=request.data)
-
-        # Check format and unique constraint 
-        if not serializer.is_valid(): 
-            return Response(serializer.errors, 
-                            status=status.HTTP_400_BAD_REQUEST) 
-
-        data = serializer.data 
-        u = django_User.objects.create(username=data['user']['username']) 
-        u.set_password(data['user']['password']) 
-        u.save()
-
-        c = Admin.objects.create(user=u)
-
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
-
 # *****************************************************************************
 # **********************    DETAILS/UPDATE/DELETE   ***************************
 # *****************************************************************************
+
+# """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+# """                               User                                    """
+# """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 class UserView(APIView):
+    renderer_classes = [TemplateHTMLRenderer]
+    template_name = 'promoapp_user/user/user.html'
+
     def get_object(self, pk):
         try:
             return User.objects.get(pk=pk)
@@ -186,7 +191,19 @@ class UserView(APIView):
     def get(self, request, pk, format=None):
         user = self.get_object(pk)
         serializer = UserSerializer(user)
-        return Response(serializer.data)
+        acc = {
+            'FB': 'Facebook',
+            'G': 'Google',
+            'TW': 'Twitter'
+        }
+        data = {
+            'username': serializer.data['user']['username'],
+            'email': serializer.data['user']['email'],
+            'first_name': serializer.data['user']['first_name'],
+            'last_name': serializer.data['user']['last_name'],
+            'acc_type': acc[serializer.data['acc_type']]
+        }
+        return Response({'user': data})
 
     def put(self, request, pk, format=None):
         user = self.get_object(pk)
@@ -196,7 +213,13 @@ class UserView(APIView):
         #     return Response(serializer.data)
         # return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+# """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+# """                          Store Manager                                """
+# """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 class StoreManagerView(APIView):
+    renderer_classes = [TemplateHTMLRenderer]
+    template_name = 'promoapp_user/storemanager/storemanager.html'
+
     def get_object(self, pk):
         try:
             return StoreManager.objects.get(pk=pk)
@@ -206,7 +229,14 @@ class StoreManagerView(APIView):
     def get(self, request, pk, format=None):
         storemanager = self.get_object(pk)
         serializer = StoreManagerSerializer(storemanager)
-        return Response(serializer.data)
+        data = {
+            'username': serializer.data['user']['username'],
+            'email': serializer.data['user']['email'],
+            'first_name': serializer.data['user']['first_name'],
+            'last_name': serializer.data['user']['last_name'],
+            'is_active': 'Activo' if serializer.data['is_active'] else 'Inactivo'
+        }
+        return Response({'user': data})
 
     def put(self, request, pk, format=None):
         storemanager = self.get_object(pk)
@@ -223,7 +253,13 @@ class StoreManagerView(APIView):
         storemanager.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
+# """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+# """                         Promotion Manager                             """
+# """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 class PromotionManagerView(APIView):
+    renderer_classes = [TemplateHTMLRenderer]
+    template_name = 'promoapp_user/promotionmanager/promotionmanager.html'
+
     def get_object(self, pk):
         try:
             return PromotionManager.objects.get(pk=pk)
@@ -233,7 +269,14 @@ class PromotionManagerView(APIView):
     def get(self, request, pk, format=None):
         promotionmanager = self.get_object(pk)
         serializer = PromotionManagerSerializer(promotionmanager)
-        return Response(serializer.data)
+        data = {
+            'username': serializer.data['user']['username'],
+            'email': serializer.data['user']['email'],
+            'first_name': serializer.data['user']['first_name'],
+            'last_name': serializer.data['user']['last_name'],
+            'is_active': 'Activo' if serializer.data['is_active'] else 'Inactivo'
+        }
+        return Response({'user': data})
 
     def put(self, request, pk, format=None):
         promotionmanager = self.get_object(pk)
@@ -249,7 +292,10 @@ class PromotionManagerView(APIView):
         user.delete()
         promotionmanager.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
-        
+
+# """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+# """                             Admin                                     """
+# """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""        
 class AdminView(APIView):
     def get_object(self, pk):
         try:
@@ -260,7 +306,13 @@ class AdminView(APIView):
     def get(self, request, pk, format=None):
         admin = self.get_object(pk)
         serializer = AdminSerializer(admin)
-        return Response(serializer.data)
+        data = {
+            'username': serializer.data['user']['username'],
+            'email': serializer.data['user']['email'],
+            'first_name': serializer.data['user']['first_name'],
+            'last_name': serializer.data['user']['last_name']
+        }
+        return Response({'user': data})
 
     def put(self, request, pk, format=None):
         admin = self.get_object(pk)
