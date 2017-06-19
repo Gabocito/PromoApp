@@ -75,3 +75,39 @@ class AdminCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Admin
         fields = ('user',)
+
+# *****************************************************************************
+# **********************             EDIT            **************************
+# *****************************************************************************
+class DjangoUserEditSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = django_User
+        fields = ('first_name', 'last_name', 'password')
+
+class UserEditSerializer(serializers.ModelSerializer):
+    user = DjangoUserEditSerializer()
+
+    class Meta:
+        model = User
+        fields = ('user',)
+
+class StoreManagerEditSerializer(serializers.ModelSerializer):
+    user = DjangoUserEditSerializer()
+
+    class Meta:
+        model = StoreManager
+        fields = ('user', )
+
+class PromotionManagerEditSerializer(serializers.ModelSerializer):
+    user = DjangoUserEditSerializer()
+
+    class Meta:
+        model = PromotionManager
+        fields = ('user', )
+
+class AdminEditSerializer(serializers.ModelSerializer):
+    user = DjangoUserEditSerializer()
+
+    class Meta:
+        model = Admin
+        fields = ('user',)

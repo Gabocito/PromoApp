@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+    <form role="form" action="{% url 'promotionmanager' pk=user.pk %}" method="post">
+      {% csrf_token %}
+      <div class="box-body">
+        {{ form.non_field_errors }}
+        <div class="form-group">
+          <label>Usuario</label>
+          <input type="text" class="form-control" value="{{ user.username }}" disabled>
+        </div>
+        <div class="form-group">
+          <label>Email</label>
+          <input type="email" class="form-control" value="{{ user.email }}" disabled>
+        </div>
+        <div class="form-group">
+          {{ form.first_name.errors }}
+          <label for="{{ form.first_name.id_for_label }}">Nombre</label>
+          {{ form.first_name }}
+        </div>
+        <div class="form-group">
+          {{ form.last_name.errors }}
+          <label for="{{ form.last_name.id_for_label }}">Apellido</label>
+          {{ form.last_name }}
+        </div>
+        <div class="form-group">
+          {{ form.password.errors }}
+          <label for="{{ form.password.id_for_label }}">Contraseña</label>
+          {{ form.password }}
+        </div>
+      </div>
+      <!-- /.box-body -->
+
+      <div class="box-footer">
+        <button type="submit" class="btn btn-primary">Editar</button>
+      </div>
+    </form>
+
+    <script>
+      $(document).ready(function(){
+        $('input').addClass('form-control');
+        $('#id_username').attr("placeholder", "Usuario");
+        $('#id_email').attr("placeholder", "Email");
+        $('#id_password').attr("placeholder", "Contraseña");
+        $('#id_first_name').attr("placeholder", "Nombre");
+        $('#id_first_name').attr("value", "{{ user.first_name }}");
+        $('#id_last_name').attr("placeholder", "Apellido");
+        $('#id_last_name').attr("value", "{{ user.last_name }}");
+      });
+    </script>
+
+
+{% endblock %}

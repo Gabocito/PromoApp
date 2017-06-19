@@ -55,7 +55,11 @@ class UserListCreate(APIView):
         mx = users.aggregate(Max('id'))
         username = data['user']['email'] if data['user']['email'] != '' else data['user']['first_name'].lower() + str(mx)
 
-        u = django_User.objects.create(username=username) 
+        try:
+            u = django_User.objects.create(username=data['user']['username']) 
+        except:
+            return Response({'error': 'User already exists!'}, 
+                            status=status.HTTP_400_BAD_REQUEST)  
         u.set_password(data['user']['password']) 
         u.save()
 
@@ -103,14 +107,21 @@ class StoreManagerListCreate(APIView):
                             status=status.HTTP_400_BAD_REQUEST) 
 
         data = serializer.data 
-        u = django_User.objects.create(username=data['user']['username']) 
+        try:
+            u = django_User.objects.create(username=data['user']['username']) 
+        except:
+            return Response({'error': 'User already exists!'}, 
+                            status=status.HTTP_400_BAD_REQUEST)  
         u.set_password(data['user']['password'])
         u.email = data['user']['email']
         u.save()
 
         s = StoreManager.objects.create(user=u, is_active=data['is_active'])
 
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+        storemanagers = StoreManager.objects.all()
+        serializer = StoreManagerSerializer(storemanagers, many=True)
+        
+        return Response({'users': serializer.data}, status=status.HTTP_201_CREATED)
 
 # """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 # """                         Promotion Manager                             """
@@ -151,15 +162,22 @@ class PromotionManagerListCreate(APIView):
             return Response(serializer.errors, 
                             status=status.HTTP_400_BAD_REQUEST) 
 
-        data = serializer.data 
-        u = django_User.objects.create(username=data['user']['username']) 
+        data = serializer.data
+        try:
+            u = django_User.objects.create(username=data['user']['username']) 
+        except:
+            return Response({'error': 'User already exists!'}, 
+                            status=status.HTTP_400_BAD_REQUEST) 
         u.set_password(data['user']['password'])
         u.email = data['user']['email']
         u.save()
 
         s = PromotionManager.objects.create(user=u, is_active=data['is_active'])
 
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+        promotionmanagers = PromotionManager.objects.all()
+        serializer = PromotionManagerSerializer(promotionmanagers, many=True)
+
+        return Response({'users': serializer.data}, status=status.HTTP_201_CREATED)
 
 # """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 # """                             Admin                                     """
@@ -216,6 +234,30 @@ class UserView(APIView):
 # """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 # """                          Store Manager                                """
 # """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+class StoreManagerFormEdit(APIView):
+    renderer_classes = [TemplateHTMLRenderer]
+    template_name = 'promoapp_user/storemanager/edit.html'
+
+    def get_object(self, pk):
+        try:
+            return StoreManager.objects.get(pk=pk)
+        except StoreManager.DoesNotExist:
+            raise Http404
+
+    def get(self, request, pk, format=None):
+        storemanager = self.get_object(pk)
+        serializer = StoreManagerSerializer(storemanager)
+        data = {
+            'username': serializer.data['user']['username'],
+            'email': serializer.data['user']['email'],
+            'first_name': serializer.data['user']['first_name'],
+            'last_name': serializer.data['user']['last_name'],
+            'is_active': 'Activo' if serializer.data['is_active'] else 'Inactivo',
+            'pk': pk
+        }
+        form = StoreManagerEditForm()
+        return Response({'form': form, 'user': data})
+
 class StoreManagerView(APIView):
     renderer_classes = [TemplateHTMLRenderer]
     template_name = 'promoapp_user/storemanager/storemanager.html'
@@ -238,6 +280,40 @@ class StoreManagerView(APIView):
         }
         return Response({'user': data})
 
+    def post(self, request, pk, format=None):
+        storemanager = self.get_object(pk)
+        form = StoreManagerEditForm(request.POST)
+        if form.is_valid():
+            data = {
+                'user': {
+                    'first_name': form.cleaned_data['first_name'],
+                    'last_name': form.cleaned_data['last_name'],
+                    'password': form.cleaned_data['password']
+                }
+            }
+            serializer = StoreManagerEditSerializer(data=data)
+
+            # Check format and unique constraint 
+            if not serializer.is_valid(): 
+                return Response(serializer.errors, 
+                                status=status.HTTP_400_BAD_REQUEST) 
+
+        data = serializer.data
+        storemanager.user.set_password(data['user']['password'])
+        storemanager.user.first_name = data['user']['first_name']
+        storemanager.user.last_name = data['user']['last_name']
+        storemanager.user.save()
+
+        data = {
+            'username': storemanager.user.username,
+            'email': storemanager.user.email,
+            'first_name': storemanager.user.first_name,
+            'last_name': storemanager.user.last_name,
+            'is_active': 'Activo' if storemanager.is_active else 'Inactivo'
+        }
+
+        return Response({'user': data}, status=status.HTTP_201_CREATED)
+
     def put(self, request, pk, format=None):
         storemanager = self.get_object(pk)
         # serializer = SnippetSerializer(snippet, data=request.data)
@@ -256,6 +332,30 @@ class StoreManagerView(APIView):
 # """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 # """                         Promotion Manager                             """
 # """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+class PromotionManagerFormEdit(APIView):
+    renderer_classes = [TemplateHTMLRenderer]
+    template_name = 'promoapp_user/promotionmanager/edit.html'
+
+    def get_object(self, pk):
+        try:
+            return PromotionManager.objects.get(pk=pk)
+        except PromotionManager.DoesNotExist:
+            raise Http404
+
+    def get(self, request, pk, format=None):
+        promotionmanager = self.get_object(pk)
+        serializer = PromotionManagerSerializer(promotionmanager)
+        data = {
+            'username': serializer.data['user']['username'],
+            'email': serializer.data['user']['email'],
+            'first_name': serializer.data['user']['first_name'],
+            'last_name': serializer.data['user']['last_name'],
+            'is_active': 'Activo' if serializer.data['is_active'] else 'Inactivo',
+            'pk': pk
+        }
+        form = PromotionManagerForm()
+        return Response({'form': form, 'user': data})
+
 class PromotionManagerView(APIView):
     renderer_classes = [TemplateHTMLRenderer]
     template_name = 'promoapp_user/promotionmanager/promotionmanager.html'
@@ -277,6 +377,40 @@ class PromotionManagerView(APIView):
             'is_active': 'Activo' if serializer.data['is_active'] else 'Inactivo'
         }
         return Response({'user': data})
+
+    def post(self, request, pk, format=None):
+        promotionmanager = self.get_object(pk)
+        form = PromotionManagerEditForm(request.POST)
+        if form.is_valid():
+            data = {
+                'user': {
+                    'first_name': form.cleaned_data['first_name'],
+                    'last_name': form.cleaned_data['last_name'],
+                    'password': form.cleaned_data['password']
+                }
+            }
+            serializer = PromotionManagerEditSerializer(data=data)
+
+            # Check format and unique constraint 
+            if not serializer.is_valid(): 
+                return Response(serializer.errors, 
+                                status=status.HTTP_400_BAD_REQUEST) 
+
+        data = serializer.data
+        promotionmanager.user.set_password(data['user']['password'])
+        promotionmanager.user.first_name = data['user']['first_name']
+        promotionmanager.user.last_name = data['user']['last_name']
+        promotionmanager.user.save()
+
+        data = {
+            'username': promotionmanager.user.username,
+            'email': promotionmanager.user.email,
+            'first_name': promotionmanager.user.first_name,
+            'last_name': promotionmanager.user.last_name,
+            'is_active': 'Activo' if promotionmanager.is_active else 'Inactivo'
+        }
+
+        return Response({'user': data}, status=status.HTTP_201_CREATED)
 
     def put(self, request, pk, format=None):
         promotionmanager = self.get_object(pk)

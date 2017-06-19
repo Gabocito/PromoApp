@@ -24,15 +24,17 @@
                     
 {% block table_body %}    
     {% for u in users %}
-        <td><a href="{{ u.pk }}">{{ u.user.username }}</a></td>
-        <td>{{ u.user.first_name }}</td>
-        <td>{{ u.user.last_name }}</td>
-        <td>{{ u.user.email }}</td>
-        {% if u.is_active %}
-            <td><i class="fa fa-check"></i></td>
-        {% else %}
-            <td><i class="fa fa-close"></i></td>
-        {% endif %}
+        <tr>
+            <td><a href="{% url 'storemanager' pk=u.pk %}">{{ u.user.username }}</a></td>
+            <td>{{ u.user.first_name }}</td>
+            <td>{{ u.user.last_name }}</td>
+            <td>{{ u.user.email }}</td>
+            {% if u.is_active %}
+                <td><i class="fa fa-check"></i></td>
+            {% else %}
+                <td><i class="fa fa-close"></i></td>
+            {% endif %}
+        </tr>
     {% endfor %}
 {% endblock %}
                
