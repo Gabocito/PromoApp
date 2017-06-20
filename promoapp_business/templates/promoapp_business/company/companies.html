@@ -1,9 +1,43 @@
-{% extends 'base.html' %}
+{% extends 'table.html' %}
 
-{% block content %}
-  {% load rest_framework %}
-  {% load static %} 
+{% block header%}
+<h1>
+    Negocios
+</h1>
+{% endblock %}
 
-  <h1>Companies</h1>
+{% block section %} <li>Negocios</li> {% endblock %}
+{% block subsection %} <li class="active">Empresas</li> {% endblock %}
 
+{% block table_title %}
+    <h3 class="box-title">Empresas</h3>
+    <a href="{% url 'companies-new' %}" class="btn btn-default" style="float:right"><i class="fa fa-plus"></i> Crear</a>
+{% endblock %}
+
+{% block table_header %}
+    <th>Nombre</th>
+    <th>Rif</th>
+    <th>Dirección</th>
+    <th>Sector Comercial</th>
+    <th>Email</th>
+{% endblock %}
+                    
+{% block table_body %}    
+    {% for c in companies %}
+        <tr>
+            <td><a href="{% url 'company' pk=c.pk %}">{{ c.name }}</a></td>
+            <td>{{ c.rif }}</td>
+            <td>{{ c.address }}</td>
+            <td>{{ c.commercial_sector }}</td>
+            <td>{{ c.email }}</td>
+        </tr>
+    {% endfor %}
+{% endblock %}
+               
+{% block table_footer %}
+    <th>Nombre</th>
+    <th>Rif</th>
+    <th>Dirección</th>
+    <th>Sector Comercial</th>
+    <th>Email</th>
 {% endblock %}

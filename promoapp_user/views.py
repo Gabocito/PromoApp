@@ -21,8 +21,19 @@ class Index(APIView):
     renderer_classes = [TemplateHTMLRenderer]
     template_name = 'promoapp_user/index.html'
 
-    def get(self, request):        
-        return Response({'index': 'It Works!'})
+    def get(self, request):
+        """ Get the type of user that's online """
+        if StoreManager.objects.filter(user_id=request.user.pk):
+            user_type = 'SM'    
+        elif PromotionManager.objects.filter(user_id=request.user.pk):
+            user_type = 'PM'
+        elif Admin.objects.filter(user_id=request.user.pk):
+            user_type = 'Admin'
+        elif User.objects.filter(user_id=request.user.pk):
+            user_type = 'User'
+        else:
+            user_type = 'Django Admin'
+        return Response({'type': user_type})
 
 # *****************************************************************************
 # **********************         CREATE/LIST        ***************************
@@ -276,7 +287,7 @@ class StoreManagerView(APIView):
             'email': serializer.data['user']['email'],
             'first_name': serializer.data['user']['first_name'],
             'last_name': serializer.data['user']['last_name'],
-            'is_active': 'Activo' if serializer.data['is_active'] else 'Inactivo'
+            'is_active': 'Activo' if serializer.data['is_active'] else 'Inactivo',
         }
         return Response({'user': data})
 
@@ -351,9 +362,9 @@ class PromotionManagerFormEdit(APIView):
             'first_name': serializer.data['user']['first_name'],
             'last_name': serializer.data['user']['last_name'],
             'is_active': 'Activo' if serializer.data['is_active'] else 'Inactivo',
-            'pk': pk
+            'pk': pk   
         }
-        form = PromotionManagerForm()
+        form = PromotionManagerEditForm()
         return Response({'form': form, 'user': data})
 
 class PromotionManagerView(APIView):

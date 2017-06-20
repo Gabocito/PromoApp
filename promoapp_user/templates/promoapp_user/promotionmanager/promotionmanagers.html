@@ -6,12 +6,12 @@
 </h1>
 {% endblock %}
 
-{% block section %} <li><a href="/users">Usuarios</a></li> {% endblock %}
+{% block section %} <li>Usuarios</li> {% endblock %}
 {% block subsection %} <li class="active">Encargados de Promociones</li> {% endblock %}
 
 {% block table_title %}
     <h3 class="box-title">Encargados de Promociones</h3>
-    <a href="new" class="btn btn-default" style="float:right"><i class="fa fa-plus"></i> Crear</a>
+    <a href="{% url 'promotionmanagers-new' %}" class="btn btn-default" style="float:right"><i class="fa fa-plus"></i> Crear</a>
 {% endblock %}
 
 {% block table_header %}

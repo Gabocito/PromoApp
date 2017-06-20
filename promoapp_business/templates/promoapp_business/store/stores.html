@@ -1,0 +1,40 @@
+{% extends 'table.html' %}
+
+{% block header%}
+<h1>
+    Negocios
+</h1>
+{% endblock %}
+
+{% block section %} <li>Negocios</li> {% endblock %}
+{% block subsection %} <li class="active">Tiendas</li> {% endblock %}
+
+{% block table_title %}
+    <h3 class="box-title">Tiendas</h3>
+    <a href="{% url 'stores-new' %}" class="btn btn-default" style="float:right"><i class="fa fa-plus"></i> Crear</a>
+{% endblock %}
+
+{% block table_header %}
+    <th>Nombre</th>
+    <th>Rif</th>
+    <th>Dirección</th>
+    <th>Email</th>
+{% endblock %}
+                    
+{% block table_body %}    
+    {% for s in stores %}
+        <tr>
+            <td><a href="{% url 'store' pk=s.pk %}">{{ s.name }}</a></td>
+            <td>{{ s.rif }}</td>
+            <td>{{ s.address }}</td>
+            <td>{{ s.email }}</td>
+        </tr>
+    {% endfor %}
+{% endblock %}
+               
+{% block table_footer %}
+    <th>Nombre</th>
+    <th>Rif</th>
+    <th>Dirección</th>
+    <th>Email</th>
+{% endblock %}

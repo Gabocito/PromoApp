@@ -1,0 +1,37 @@
+{% extends 'table.html' %}
+
+{% block header%}
+<h1>
+    Negocios
+</h1>
+{% endblock %}
+
+{% block section %} <li>Negocios</li> {% endblock %}
+{% block subsection %} <li class="active">Campañas Publicitarias</li> {% endblock %}
+
+{% block table_title %}
+    <h3 class="box-title">Campañas Publicitarias</h3>
+    <a href="{% url 'advertisingcampaigns-new' %}" class="btn btn-default" style="float:right"><i class="fa fa-plus"></i> Crear</a>
+{% endblock %}
+
+{% block table_header %}
+    <th>Target</th>
+    <th>Fecha de Inicio</th>
+    <th>Fecha de Fin</th>
+{% endblock %}
+                    
+{% block table_body %}    
+    {% for a in advertisingcampaigns %}
+        <tr>
+            <td><a href="{% url 'company' pk=a.pk %}">{{ a.target }}</a></td>
+            <td>{{ a.start_date }}</td>
+            <td>{{ a.end_date }}</td>
+        </tr>
+    {% endfor %}
+{% endblock %}
+               
+{% block table_footer %}
+    <th>Target</th>
+    <th>Fecha de Inicio</th>
+    <th>Fecha de Fin</th>
+{% endblock %}

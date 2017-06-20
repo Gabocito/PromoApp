@@ -8,25 +8,25 @@ from .models import *
 class PromotionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Promotion
-        fields = ('description', 'products', 'discount')
+        fields = ('pk', 'description', 'products', 'discount')
 
 class AdvertisingCampaignSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = AdvertisingCampaign
-        fields = ('target', 'start_date', 'end_date')
+        fields = ('pk', 'target', 'start_date', 'end_date')
 
 class CompanySerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Company
-        fields = ('name', 'rif', 'address', 'email')
+        fields = ('pk', 'name', 'rif', 'commercial_sector', 'address', 'email')
 
 class StoreSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Store
-        fields = ('name', 'rif', 'address', 'email')
+        fields = ('pk', 'name', 'rif', 'address', 'email')
 
 # *****************************************************************************
 # **********************            CREATE           **************************
@@ -45,9 +45,33 @@ class AdvertisingCampaignCreateSerializer(serializers.ModelSerializer):
 class CompanyCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Company
-        fields = ('name', 'rif', 'address', 'email')
+        fields = ('name', 'rif', 'commercial_sector', 'address', 'email')
 
 class StoreCreateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Store
+        fields = ('name', 'rif', 'address', 'email')
+
+# *****************************************************************************
+# **********************             EDIT            **************************
+# *****************************************************************************
+class PromotionEditSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Promotion
+        fields = ('description', 'products', 'discount')
+
+class AdvertisingCampaignEditSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = AdvertisingCampaign
+        fields = ('target', 'start_date', 'end_date')
+
+class CompanyEditSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Company
+        fields = ('name', 'rif', 'commercial_sector', 'address', 'email')
+
+class StoreEditSerializer(serializers.ModelSerializer):
     class Meta:
         model = Store
         fields = ('name', 'rif', 'address', 'email')

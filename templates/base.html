@@ -150,9 +150,9 @@
                     </span>
                   </a>
                   <ul class="treeview-menu">
-                    <li><a href="/users"><i class="fa fa-circle-o"></i> Usuarios Comunes</a></li>
-                    <li><a href="/storemanagers"><i class="fa fa-circle-o"></i> Encargados de Tiendas</a></li>
-                    <li><a href="/promotionmanagers"><i class="fa fa-circle-o"></i> Encargados de Promociones</a></li>
+                    <li><a href="{% url 'users' %}"><i class="fa fa-circle-o"></i> Usuarios Comunes</a></li>
+                    <li><a href="{% url 'storemanagers' %}"><i class="fa fa-circle-o"></i> Encargados de Tiendas</a></li>
+                    <li><a href="{% url 'promotionmanagers' %}"><i class="fa fa-circle-o"></i> Encargados de Promociones</a></li>
                   </ul>
                 </li>
                 <li class="treeview">
@@ -164,10 +164,10 @@
                     </span>
                   </a>
                   <ul class="treeview-menu">
-                    <li><a href="/promotions"><i class="fa fa-circle-o"></i> Promociones</a></li>
-                    <li><a href="/advertisingcampaigns"><i class="fa fa-circle-o"></i> Campañas Publicitarias</a></li>
-                    <li><a href="/stores"><i class="fa fa-circle-o"></i> Tiendas</a></li>
-                    <li><a href="/promotionmanagers"><i class="fa fa-circle-o"></i> Empresas</a></li>
+                    <li><a href="{% url 'promotions' %}"><i class="fa fa-circle-o"></i> Promociones</a></li>
+                    <li><a href="{% url 'advertisingcampaigns' %}"><i class="fa fa-circle-o"></i> Campañas Publicitarias</a></li>
+                    <li><a href="{% url 'stores' %}"><i class="fa fa-circle-o"></i> Tiendas</a></li>
+                    <li><a href="{% url 'companies' %}"><i class="fa fa-circle-o"></i> Empresas</a></li>
                   </ul>
                 </li>
               </ul>

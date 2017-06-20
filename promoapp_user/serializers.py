@@ -17,28 +17,28 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ('user', 'acc_type', 'pk')
+        fields = ('pk', 'user', 'acc_type')
 
 class StoreManagerSerializer(serializers.ModelSerializer):
     user = DjangoUserSerializer()
 
     class Meta:
         model = StoreManager
-        fields = ('user', 'is_active', 'pk')
+        fields = ('pk', 'user', 'is_active')
 
 class PromotionManagerSerializer(serializers.ModelSerializer):
     user = DjangoUserSerializer()
 
     class Meta:
         model = PromotionManager
-        fields = ('user', 'is_active', 'pk')
+        fields = ('pk', 'user', 'is_active')
 
 class AdminSerializer(serializers.ModelSerializer):
     user = DjangoUserSerializer()
 
     class Meta:
         model = Admin
-        fields = ('user', 'pk')
+        fields = ('pk', 'user')
 
 # *****************************************************************************
 # **********************            CREATE           **************************

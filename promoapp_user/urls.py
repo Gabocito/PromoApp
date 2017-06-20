@@ -13,9 +13,9 @@ urlpatterns = [
     url(r'^admins/$', AdminListCreate.as_view(), name='admins'),
     # ****************   DETAILS/UPDATE/DELETE *******************
     url(r'^users/(?P<pk>[0-9]+)/$', UserView.as_view(), name='user'),
-    url(r'^storemanagers/(?P<pk>[0-9]+)/edit/$', StoreManagerFormEdit.as_view(), name='storemanager-edit'),
     url(r'^storemanagers/(?P<pk>[0-9]+)/$', StoreManagerView.as_view(), name='storemanager'),
-    url(r'^promotionmanagers/(?P<pk>[0-9]+)/edit/$', PromotionManagerFormEdit.as_view(), name='promotionmanager-edit'),
+    url(r'^storemanagers/(?P<pk>[0-9]+)/edit/$', StoreManagerFormEdit.as_view(), name='storemanager-edit'),
     url(r'^promotionmanagers/(?P<pk>[0-9]+)/$', PromotionManagerView.as_view(), name='promotionmanager'),
+    url(r'^promotionmanagers/(?P<pk>[0-9]+)/edit/$', PromotionManagerFormEdit.as_view(), name='promotionmanager-edit'),
     url(r'^admins/(?P<pk>[0-9]+)/$', AdminView.as_view(), name='admin'),
 ]

@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+    <form role="form">
+      <div class="box-body">
+        <div class="form-group">
+          <label>Nombre</label>
+          <input type="text" class="form-control" value="{{ company.name }}" disabled>
+        </div>
+        <div class="form-group">
+          <label>Rif</label>
+          <input type="text" class="form-control" value="{{ company.rif }}" disabled>
+        </div>
+        <div class="form-group">
+          <label>Dirección</label>
+          <input type="text" class="form-control" value="{{ company.address }}" disabled>
+        </div>
+        <div class="form-group">
+          <label>Sector Comercial</label>
+          <input type="text" class="form-control" value="{{ company.commercial_sector }}" disabled>
+        </div>
+        <div class="form-group">
+          <label>Email</label>
+          <input type="email" class="form-control" value="{{ company.email }}" disabled>
+        </div>
+      </div>
+      <!-- /.box-body -->
+    </form>
+
+{% endblock %}

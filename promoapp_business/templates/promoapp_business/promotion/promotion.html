@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+    <form role="form">
+      <div class="box-body">
+        <div class="form-group">
+          <label>Descripción</label>
+          <input type="text" class="form-control" value="{{ promotion.description }}" disabled>
+        </div>
+        <div class="form-group">
+          <label>Descuento</label>
+          <input type="text" class="form-control" value="{{ promotion.discount }}%" disabled>
+        </div>
+        <div class="form-group">
+          <label>Productos</label>
+          <input type="text" class="form-control" value="{{ promotion.products }}" disabled>
+        </div>
+      </div>
+      <!-- /.box-body -->
+    </form>
+
+{% endblock %}

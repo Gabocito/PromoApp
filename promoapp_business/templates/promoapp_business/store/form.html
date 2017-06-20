@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+    <form role="form" action="{% url 'stores' %}" method="post">
+      {% csrf_token %}
+      <div class="box-body">
+        {{ form.non_field_errors }}
+        <div class="form-group">
+          {{ form.name.errors }}
+          <label for="{{ form.name.id_for_label }}">Nombre</label>
+          {{ form.name }}
+        </div>
+        <div class="form-group">
+          {{ form.rif.errors }}
+          <label for="{{ form.rif.id_for_label }}">Rif</label>
+          {{ form.rif }}
+        </div>
+        <div class="form-group">
+          {{ form.address.errors }}
+          <label for="{{ form.address.id_for_label }}">Dirección</label>
+          {{ form.address }}
+        </div>
+        <div class="form-group">
+          {{ form.email.errors }}
+          <label for="{{ form.email.id_for_label }}">Email</label>
+          {{ form.email }}
+        </div>
+      </div>
+      <!-- /.box-body -->
+
+      <div class="box-footer">
+        <button type="submit" class="btn btn-primary">Crear</button>
+      </div>
+    </form>
+
+    <script>
+      $(document).ready(function(){
+        $('input').addClass('form-control');
+        $('#id_name').attr("placeholder", "Nombre");
+        $('#id_rif').attr("placeholder", "Rif");
+        $('#id_address').attr("placeholder", "Dirección");
+        $('#id_email').attr("placeholder", "Email");
+      });
+    </script>
+
+
+{% endblock %}
