@@ -5,13 +5,13 @@ from views import *
 urlpatterns = [
     # **********************   CREATE/LIST ***********************
     url(r'^promotions/$', PromotionListCreate.as_view(), name='promotions'),
-    url(r'^promotions/new/$', PromotionFormCreate.as_view(), name='promotions-new'),
+    url(r'^promotions/add/$', PromotionFormCreate.as_view(), name='promotions-add'),
     url(r'^advertisingcampaigns/$', AdvertisingCampaignListCreate.as_view(), name='advertisingcampaigns'),
-    url(r'^advertisingcampaigns/new/$', AdvertisingCampaignFormCreate.as_view(), name='advertisingcampaigns-new'),
+    url(r'^advertisingcampaigns/add/$', AdvertisingCampaignFormCreate.as_view(), name='advertisingcampaigns-add'),
     url(r'^companies/$', CompanyListCreate.as_view(), name='companies'),
-    url(r'^companies/new/$', CompanyFormCreate.as_view(), name='companies-new'),
+    url(r'^companies/add/$', CompanyFormCreate.as_view(), name='companies-add'),
     url(r'^stores/$', StoreListCreate.as_view(), name='stores'),
-    url(r'^stores/new/$', StoreFormCreate.as_view(), name='stores-new'),
+    url(r'^stores/add/$', StoreFormCreate.as_view(), name='stores-add'),
     # ****************   DETAILS/UPDATE/DELETE *******************
     url(r'^promotions/(?P<pk>[0-9]+)/$', PromotionView.as_view(), name='promotion'),
     url(r'^promotions/(?P<pk>[0-9]+)/edit/$', PromotionFormEdit.as_view(), name='promotion-edit'),

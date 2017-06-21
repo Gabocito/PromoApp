@@ -17,11 +17,11 @@ class Promotion(models.Model):
 
 class AdvertisingCampaign(models.Model):
     target = models.CharField(max_length=32)
-    start_date = models.DateTimeField()
-    end_date = models.DateTimeField()
+    start_date = models.DateField()
+    end_date = models.DateField()
 
     def __unicode__(self):
-        return self.target + ' ' + self.start_date + ' ' + self.end_date
+        return self.target
 
 class CompanyAdvertisingCampaign(models.Model):
     company = models.ForeignKey('Company')

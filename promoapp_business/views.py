@@ -42,10 +42,10 @@ class PromotionListCreate(APIView):
         if form.is_valid():
             serializer = PromotionSerializer(data=form.cleaned_data)
 
-        # Check format and unique constraint 
-        if not serializer.is_valid(): 
-            return Response(serializer.errors, 
-                            status=status.HTTP_400_BAD_REQUEST) 
+            # Check format and unique constraint 
+            if not serializer.is_valid(): 
+                return Response(serializer.errors, 
+                                status=status.HTTP_400_BAD_REQUEST) 
 
         data = serializer.data 
         
@@ -77,31 +77,34 @@ class AdvertisingCampaignListCreate(APIView):
 
     """ List all advertising campaigns """
     def get(self, request, format=None):
+        print "ENTRE AQUIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII"
         advertisingcampaigns = AdvertisingCampaign.objects.all()
         serializer = AdvertisingCampaignSerializer(advertisingcampaigns, many=True)
         return Response({'advertisingcampaigns': serializer.data})
 
     def post(self, request):
+        print "recibi:"
+        print request.POST
+        print "**************************************************************"
         form = AdvertisingCampaignForm(request.POST)
         if form.is_valid():
             serializer = AdvertisingCampaignCreateSerializer(data=form.cleaned_data)
 
-        # Check format and unique constraint 
-        if not serializer.is_valid(): 
-            return Response(serializer.errors, 
-                            status=status.HTTP_400_BAD_REQUEST) 
+            # Check format and unique constraint 
+            if not serializer.is_valid(): 
+                return Response(serializer.errors, 
+                                status=status.HTTP_400_BAD_REQUEST) 
 
         data = serializer.data 
         
-        a = AdvertisingCampaign.objects.create()  
+        a = AdvertisingCampaign.objects.create(start_date=data['start_date'], end_date=data['end_date'])  
         a.target = data['target']
-        a.start_date = data['start_date']
-        a.end_date = data['end_date']
         a.save()
 
+        print "Guardeeeeeeeeeeeeeeeeeeeeee"
         advertisingcampaigns = AdvertisingCampaign.objects.all()
         serializer = AdvertisingCampaignSerializer(advertisingcampaigns, many=True)
-        
+        print "Geeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeet"
         return Response({'advertisingcampaigns': serializer.data}, status=status.HTTP_201_CREATED)
 
 # """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -130,10 +133,10 @@ class CompanyListCreate(APIView):
         if form.is_valid():
             serializer = CompanyCreateSerializer(data=form.cleaned_data)
 
-        # Check format and unique constraint 
-        if not serializer.is_valid(): 
-            return Response(serializer.errors, 
-                            status=status.HTTP_400_BAD_REQUEST) 
+            # Check format and unique constraint 
+            if not serializer.is_valid(): 
+                return Response(serializer.errors, 
+                                status=status.HTTP_400_BAD_REQUEST) 
 
         data = serializer.data 
         
@@ -176,10 +179,10 @@ class StoreListCreate(APIView):
         if form.is_valid():
             serializer = StoreCreateSerializer(data=form.cleaned_data)
 
-        # Check format and unique constraint 
-        if not serializer.is_valid(): 
-            return Response(serializer.errors, 
-                            status=status.HTTP_400_BAD_REQUEST) 
+            # Check format and unique constraint 
+            if not serializer.is_valid(): 
+                return Response(serializer.errors, 
+                                status=status.HTTP_400_BAD_REQUEST) 
 
         data = serializer.data 
         

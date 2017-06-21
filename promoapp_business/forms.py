@@ -2,6 +2,8 @@
 # -*- coding: utf-8 -*-
 
 from django import forms
+from functools import partial
+DateInput = partial(forms.DateInput, {'class': 'datepicker'})
 
 class PromotionForm(forms.Form):
     description = forms.CharField(label='Descripción', max_length=200)
@@ -15,13 +17,13 @@ class PromotionEditForm(forms.Form):
 
 class AdvertisingCampaignForm(forms.Form):
     target = forms.CharField(label='Target' ,max_length=32)
-    start_date = forms.DateTimeField(label='Fecha de Inicio')
-    end_date = forms.DateTimeField(label='Fecha de Finalización')
+    start_date = forms.DateField(label='Fecha de Inicio', widget=DateInput())
+    end_date = forms.DateField(label='Fecha de Fin', widget=DateInput())
 
 class AdvertisingCampaignEditForm(forms.Form):
     target = forms.CharField(label='Target' ,max_length=32)
-    start_date = forms.DateTimeField(label='Fecha de Inicio')
-    end_date = forms.DateTimeField(label='Fecha de Finalización')
+    start_date = forms.DateField(label='Fecha de Inicio', widget=DateInput())
+    end_date = forms.DateField(label='Fecha de Fin', widget=DateInput())
 
 class CompanyForm(forms.Form):
     name = forms.CharField(label='Nombre', max_length=32)

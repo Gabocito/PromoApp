@@ -6,9 +6,9 @@ urlpatterns = [
     url(r'^index/$', Index.as_view(), name='index'),
     # **********************   CREATE/LIST ***********************
     url(r'^users/$', UserListCreate.as_view(), name='users'),
-    url(r'^storemanagers/new/$', StoreManagerFormCreate.as_view(), name='storemanagers-new'),
+    url(r'^storemanagers/add/$', StoreManagerFormCreate.as_view(), name='storemanagers-add'),
     url(r'^storemanagers/$', StoreManagerListCreate.as_view(), name='storemanagers'),
-    url(r'^promotionmanagers/new/$', PromotionManagerFormCreate.as_view(), name='promotionmanagers-new'),
+    url(r'^promotionmanagers/add/$', PromotionManagerFormCreate.as_view(), name='promotionmanagers-add'),
     url(r'^promotionmanagers/$', PromotionManagerListCreate.as_view(), name='promotionmanagers'),
     url(r'^admins/$', AdminListCreate.as_view(), name='admins'),
     # ****************   DETAILS/UPDATE/DELETE *******************
