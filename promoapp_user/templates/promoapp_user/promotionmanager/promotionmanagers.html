@@ -2,46 +2,49 @@
 
 {% block header%}
 <h1>
-    Usuarios
+    Users
 </h1>
 {% endblock %}
 
-{% block section %} <li>Usuarios</li> {% endblock %}
-{% block subsection %} <li class="active">Encargados de Promociones</li> {% endblock %}
+{% block section %} <li>Users</li> {% endblock %}
+{% block subsection %} <li class="active">Store Managers</li> {% endblock %}
 
 {% block table_title %}
-    <h3 class="box-title">Encargados de Promociones</h3>
-    <a href="{% url 'promotionmanagers-add' %}" class="btn btn-default" style="float:right"><i class="fa fa-plus"></i> Crear</a>
+    <h3 class="box-title">Store Managers</h3>
+    <a href="{% url 'promotionmanagers-add' %}" class="btn btn-default" style="float:right"><i class="fa fa-plus"></i> Add</a>
 {% endblock %}
 
 {% block table_header %}
-    <th>Usuario</th>
-    <th>Nombre</th>
-    <th>Apellido</th>
+    <th>Username</th>
+    <th>Name</th>
+    <th>Last Name</th>
     <th>Email</th>
-    <th>Estado</th>
+    <th>Status</th>
+    <th>Action</th>
 {% endblock %}
                     
 {% block table_body %}    
     {% for u in users %}
         <tr>
-            <td><a href="{% url 'promotionmanager' pk=u.pk %}">{{ u.user.username }}</a></td>
+            <td><a title="Details" href="{% url 'promotionmanager' pk=u.pk %}">{{ u.user.username }}</a></td>
             <td>{{ u.user.first_name }}</td>
             <td>{{ u.user.last_name }}</td>
             <td>{{ u.user.email }}</td>
             {% if u.is_active %}
-                <td><i class="fa fa-check"></i></td>
+                <td><form action="{% url 'promotionmanager-edit-status' pk=u.pk %}" method="post">{% csrf_token %}<input name="is_active" type="hidden" value="False"><button class="btn-link" type="submit"><i id="activate" title="Set active" class="fa fa-check"></i></button></form></td>
             {% else %}
-                <td><i class="fa fa-close"></i></td>
+                <td><form action="{% url 'promotionmanager-edit-status' pk=u.pk %}" method="post">{% csrf_token %}<input name="is_active" type="hidden" value="True"><button class="btn-link" type="submit"><i id="activate" title="Set active" class="fa fa-close"></i></button></form></td>
             {% endif %}
+            <td><a title="Edit" href="{% url 'promotionmanager-edit' pk=u.pk %}"><i class="fa fa-edit"></i></a></td>
         </tr>
     {% endfor %}
 {% endblock %}
                
 {% block table_footer %}
-    <th>Usuario</th>
-    <th>Nombre</th>
-    <th>Apellido</th>
+    <th>Username</th>
+    <th>Name</th>
+    <th>Last Name</th>
     <th>Email</th>
-    <th>Estado</th>
+    <th>Status</th>
+    <th>Action</th>
 {% endblock %}

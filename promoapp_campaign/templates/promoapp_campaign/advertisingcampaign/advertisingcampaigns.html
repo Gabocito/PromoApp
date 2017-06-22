@@ -1,0 +1,40 @@
+{% extends 'table.html' %}
+
+{% block header%}
+<h1>
+    Campaigns
+</h1>
+{% endblock %}
+
+{% block section %} <li>Campaigns</li> {% endblock %}
+{% block subsection %} <li class="active">Advertising Campaigns</li> {% endblock %}
+
+{% block table_title %}
+    <h3 class="box-title">Advertising Campaigns</h3>
+    <a href="{% url 'advertisingcampaigns-add' %}" class="btn btn-default" style="float:right"><i class="fa fa-plus"></i> Add</a>
+{% endblock %}
+
+{% block table_header %}
+    <th>Target</th>
+    <th>Start Date</th>
+    <th>End Date</th>
+    <th>Action</th>
+{% endblock %}
+                    
+{% block table_body %}    
+    {% for a in advertisingcampaigns %}
+        <tr>
+            <td><a title="Details" href="{% url 'advertisingcampaign' pk=a.pk %}">{{ a.target }}</a></td>
+            <td>{{ a.start_date }}</td>
+            <td>{{ a.end_date }}</td>
+            <td><a title="Edit" href="{% url 'advertisingcampaign-edit' pk=a.pk %}"><i class="fa fa-edit"></i></a></td>
+        </tr>
+    {% endfor %}
+{% endblock %}
+               
+{% block table_footer %}
+    <th>Target</th>
+    <th>Start Date</th>
+    <th>End Date</th>
+    <th>Action</th>
+{% endblock %}

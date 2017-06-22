@@ -103,7 +103,7 @@ class PromotionManagerEditSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = PromotionManager
-        fields = ('user', )
+        fields = ('user',)
 
 class AdminEditSerializer(serializers.ModelSerializer):
     user = DjangoUserEditSerializer()

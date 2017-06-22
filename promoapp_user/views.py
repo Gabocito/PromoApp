@@ -10,16 +10,16 @@ from models import *
 from forms import *
 
 from django.contrib.auth.models import User as django_User
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, redirect
 from django.db.models import Max
 from django.http import Http404
 
 # *****************************************************************************
 # **********************            INDEX            **************************
 # *****************************************************************************
-class Index(APIView):
+class Dashboard(APIView):
     renderer_classes = [TemplateHTMLRenderer]
-    template_name = 'promoapp_user/index.html'
+    template_name = 'promoapp_user/dashboard.html'
 
     def get(self, request):
         """ Get the type of user that's online """
@@ -245,6 +245,26 @@ class UserView(APIView):
 # """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 # """                          Store Manager                                """
 # """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+class StoreManagerEditStatus(APIView):
+    def get_object(self, pk):
+        try:
+            return StoreManager.objects.get(pk=pk)
+        except StoreManager.DoesNotExist:
+            raise Http404
+
+    def post(self, request, pk, format=None):
+        storemanager = self.get_object(pk)
+
+        try:
+            is_active = True if request.POST['is_active'] == 'True' else 'False'
+            storemanager.is_active = is_active
+            storemanager.save()
+        except:
+            return Response({'errors': 'Unknown fields!'}, 
+                                status=status.HTTP_400_BAD_REQUEST)
+
+        return redirect('storemanagers')        
+
 class StoreManagerFormEdit(APIView):
     renderer_classes = [TemplateHTMLRenderer]
     template_name = 'promoapp_user/storemanager/edit.html'
@@ -343,6 +363,26 @@ class StoreManagerView(APIView):
 # """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 # """                         Promotion Manager                             """
 # """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+class PromotionManagerEditStatus(APIView):
+    def get_object(self, pk):
+        try:
+            return PromotionManager.objects.get(pk=pk)
+        except PromotionManager.DoesNotExist:
+            raise Http404
+
+    def post(self, request, pk, format=None):
+        promotionmanager = self.get_object(pk)
+
+        try:
+            is_active = True if request.POST['is_active'] == 'True' else 'False'
+            promotionmanager.is_active = is_active
+            promotionmanager.save()
+        except:
+            return Response({'errors': 'Unknown fields!'}, 
+                                status=status.HTTP_400_BAD_REQUEST)
+
+        return redirect('promotionmanagers')
+
 class PromotionManagerFormEdit(APIView):
     renderer_classes = [TemplateHTMLRenderer]
     template_name = 'promoapp_user/promotionmanager/edit.html'

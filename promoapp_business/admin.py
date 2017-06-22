@@ -1,10 +1,6 @@
 from django.contrib import admin
 
-from promoapp_business.models import Promotion, AdvertisingCampaign, Company, Store
-
-admin.site.register(Promotion)
-
-admin.site.register(AdvertisingCampaign)
+from promoapp_business.models import Company, Store
 
 admin.site.register(Company)
 

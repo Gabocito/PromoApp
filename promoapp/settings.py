@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'promoapp_user',
     'promoapp_business',
+    'promoapp_campaign',
 ]
 
 MIDDLEWARE = [

@@ -2,29 +2,29 @@
 
 {% block header%}
 <h1>
-    Usuarios
+    Users
 </h1>
 {% endblock %}
 
-{% block section %} <li>Usuarios</li> {% endblock %}
-{% block subsection %} <li class="active">Usuarios Comunes</li> {% endblock %}
+{% block section %} <li>Users</li> {% endblock %}
+{% block subsection %} <li class="active">Common Users</li> {% endblock %}
 
 {% block table_title %}
-    <h3 class="box-title">Usuarios Comunes</h3>
+    <h3 class="box-title">Common Users</h3>
 {% endblock %}
 
 {% block table_header %}
-    <th>Usuario</th>
-    <th>Nombre</th>
-    <th>Apellido</th>
+    <th>Username</th>
+    <th>Name</th>
+    <th>Last Name</th>
     <th>Email</th>
-    <th>Tipo de Cuenta</th>
+    <th>Type</th>
 {% endblock %}
                     
 {% block table_body %}    
     {% for u in users %}
         <tr>
-            <td><a href="{% url 'user' pk=u.pk %}">{{ u.user.username }}</a></td>
+            <td><a title="Details" href="{% url 'user' pk=u.pk %}">{{ u.user.username }}</a></td>
             <td>{{ u.user.first_name }}</td>
             <td>{{ u.user.last_name }}</td>
             <td>{{ u.user.email }}</td>
@@ -40,9 +40,9 @@
 {% endblock %}
                
 {% block table_footer %}
-    <th>Usuario</th>
-    <th>Nombre</th>
-    <th>Apellido</th>
+    <th>Username</th>
+    <th>Name</th>
+    <th>Last Name</th>
     <th>Email</th>
-    <th>Tipo de Cuenta</th>
+    <th>Type</th>
 {% endblock %}

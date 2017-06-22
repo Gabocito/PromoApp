@@ -61,7 +61,7 @@
     <div class="wrapper">
         <header class="main-header">
             <!-- Logo -->
-            <a href="/index" class="logo">
+            <a href="{% url 'dashboard' %}" class="logo">
               <!-- logo for regular state and mobile devices -->
               <span class="logo-lg"><b>PromoApp</b> Admin</span>
             </a>
@@ -334,33 +334,49 @@
               <!-- sidebar menu: : style can be found in sidebar.less -->
               <ul class="sidebar-menu">
                 <li class="header">Menu</li>
-                <li class="treeview">
-                  <a href="#">
+                <li class="treeview" id="dashboard">
+                  <a href="{% url 'dashboard' %}">
+                    <i class="fa fa-dashboard"></i> <span>Dashboard</span>
+                  </a>
+                </li>
+                <li class="treeview" id="users">
+                  <a href="">
                     <i class="fa fa-users"></i>
-                    <span>Usuarios</span>
+                    <span>Users</span>
                     <span class="pull-right-container">
                       <i class="fa fa-angle-left pull-right"></i>
                     </span>
                   </a>
                   <ul class="treeview-menu">
-                    <li><a href="{% url 'users' %}"><i class="fa fa-circle-o"></i> Usuarios Comunes</a></li>
-                    <li><a href="{% url 'storemanagers' %}"><i class="fa fa-circle-o"></i> Encargados de Tiendas</a></li>
-                    <li><a href="{% url 'promotionmanagers' %}"><i class="fa fa-circle-o"></i> Encargados de Promociones</a></li>
+                    <li><a href="{% url 'users' %}"><i class="fa fa-circle-o"></i> Common Users</a></li>
+                    <li><a href="{% url 'storemanagers' %}"><i class="fa fa-circle-o"></i> Store Managers</a></li>
+                    <li><a href="{% url 'promotionmanagers' %}"><i class="fa fa-circle-o"></i> Promotion Managers</a></li>
                   </ul>
                 </li>
-                <li class="treeview">
-                  <a href="#">
-                    <i class="fa fa-money"></i>
-                    <span>Negocios</span>
+                <li class="treeview" id="campañas">
+                  <a href="">
+                    <i class="fa fa-file"></i>
+                    <span>Campaign</span>
                     <span class="pull-right-container">
                       <i class="fa fa-angle-left pull-right"></i>
                     </span>
                   </a>
                   <ul class="treeview-menu">
-                    <li><a href="{% url 'promotions' %}"><i class="fa fa-circle-o"></i> Promociones</a></li>
-                    <li><a href="{% url 'advertisingcampaigns' %}"><i class="fa fa-circle-o"></i> Campañas Publicitarias</a></li>
-                    <li><a href="{% url 'stores' %}"><i class="fa fa-circle-o"></i> Tiendas</a></li>
-                    <li><a href="{% url 'companies' %}"><i class="fa fa-circle-o"></i> Empresas</a></li>
+                    <li><a href="{% url 'promotions' %}"><i class="fa fa-circle-o"></i> Promotions</a></li>
+                    <li><a href="{% url 'advertisingcampaigns' %}"><i class="fa fa-circle-o"></i> Advertising Campaigns</a></li>
+                  </ul>
+                </li>
+                <li class="treeview" id="negocios">
+                  <a href="">
+                    <i class="fa fa-money"></i>
+                    <span>Business</span>
+                    <span class="pull-right-container">
+                      <i class="fa fa-angle-left pull-right"></i>
+                    </span>
+                  </a>
+                  <ul class="treeview-menu">
+                    <li><a href="{% url 'stores' %}"><i class="fa fa-circle-o"></i> Stores</a></li>
+                    <li><a href="{% url 'companies' %}"><i class="fa fa-circle-o"></i> Companies</a></li>
                   </ul>
                 </li>
               </ul>
@@ -590,7 +606,7 @@
         <script src= {% static "bootstrap/js/bootstrap.min.js" %}></script>
         <!-- Morris.js charts -->
         <script src="https://cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js"></script>
-        <script src= {% static "plugins/morris/morris.min.js" %}></script>
+<!--         <script src= {% static "plugins/morris/morris.min.js" %}></script> -->
         <!-- Sparkline -->
         <script src= {% static "plugins/sparkline/jquery.sparkline.min.js" %}></script>
         <!-- jvectormap -->
@@ -612,10 +628,35 @@
         <!-- AdminLTE App -->
         <script src= {% static "dist/js/app.min.js" %}></script>
         <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
-        <script src= {% static "dist/js/pages/dashboard.js" %}></script>
+<!--         <script src= {% static "dist/js/pages/dashboard.js" %}></script> -->
         <!-- AdminLTE for demo purposes -->
         <script src= {% static "dist/js/demo.js" %}></script>
     {% endblock %}
+    <script>
+      $(document).ready(function (){
+        if ("{{ request.path }}" == "/dashboard/") {
+          $("#dashboard").addClass("active");
+          $("#users").removeClass("active");
+          $("#campañas").removeClass("active");
+          $("#negocios").removeClass("active");
+        } else if (("{{ request.path }}".includes("/users/")) || ("{{ request.path }}".includes("/storemanagers/")) || ("{{ request.path }}".includes("/promotionmanagers/"))) {
+          $("#dashboard").removeClass("active");
+          $("#users").addClass("active");
+          $("#campañas").removeClass("active");
+          $("#negocios").removeClass("active");
+        } else if (("{{ request.path }}".includes("/advertisingcampaigns/")) || ("{{ request.path }}".includes("/promotions/"))) {
+          $("#dashboard").removeClass("active");
+          $("#users").removeClass("active");
+          $("#campañas").addClass("active");
+          $("#negocios").removeClass("active");
+        } else if (("{{ request.path }}".includes("/companies/")) || ("{{ request.path }}".includes("/stores/"))) {
+          $("#dashboard").removeClass("active");
+          $("#users").removeClass("active");
+          $("#campañas").removeClass("active");
+          $("#negocios").addClass("active");
+        }
+      });
+    </script>
   
   </body>
 </html>

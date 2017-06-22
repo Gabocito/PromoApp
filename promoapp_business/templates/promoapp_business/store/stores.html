@@ -2,39 +2,42 @@
 
 {% block header%}
 <h1>
-    Negocios
+    Business
 </h1>
 {% endblock %}
 
-{% block section %} <li>Negocios</li> {% endblock %}
-{% block subsection %} <li class="active">Tiendas</li> {% endblock %}
+{% block section %} <li>Business</li> {% endblock %}
+{% block subsection %} <li class="active">Stores</li> {% endblock %}
 
 {% block table_title %}
-    <h3 class="box-title">Tiendas</h3>
-    <a href="{% url 'stores-add' %}" class="btn btn-default" style="float:right"><i class="fa fa-plus"></i> Crear</a>
+    <h3 class="box-title">Stores</h3>
+    <a href="{% url 'stores-add' %}" class="btn btn-default" style="float:right"><i class="fa fa-plus"></i> Add</a>
 {% endblock %}
 
 {% block table_header %}
-    <th>Nombre</th>
+    <th>Name</th>
     <th>Rif</th>
-    <th>Dirección</th>
+    <th>Address</th>
     <th>Email</th>
+    <th>Action</th>
 {% endblock %}
                     
 {% block table_body %}    
     {% for s in stores %}
         <tr>
-            <td><a href="{% url 'store' pk=s.pk %}">{{ s.name }}</a></td>
+            <td><a title="Details" href="{% url 'store' pk=s.pk %}">{{ s.name }}</a></td>
             <td>{{ s.rif }}</td>
             <td>{{ s.address }}</td>
             <td>{{ s.email }}</td>
+            <td><a title="Edit" href="{% url 'store-edit' pk=s.pk %}"><i class="fa fa-edit"></i></a></td>
         </tr>
     {% endfor %}
 {% endblock %}
                
 {% block table_footer %}
-    <th>Nombre</th>
+    <th>Name</th>
     <th>Rif</th>
-    <th>Dirección</th>
+    <th>Address</th>
     <th>Email</th>
+    <th>Action</th>
 {% endblock %}

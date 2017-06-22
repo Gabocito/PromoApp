@@ -7,7 +7,7 @@
       <div class="box-body">
         {{ form.non_field_errors }}
         <div class="form-group">
-          <label>Usuario</label>
+          <label>Username</label>
           <input type="text" class="form-control" value="{{ user.username }}" disabled>
         </div>
         <div class="form-group">
@@ -16,36 +16,36 @@
         </div>
         <div class="form-group">
           {{ form.first_name.errors }}
-          <label for="{{ form.first_name.id_for_label }}">Nombre</label>
+          <label for="{{ form.first_name.id_for_label }}">Name</label>
           {{ form.first_name }}
         </div>
         <div class="form-group">
           {{ form.last_name.errors }}
-          <label for="{{ form.last_name.id_for_label }}">Apellido</label>
+          <label for="{{ form.last_name.id_for_label }}">Last Name</label>
           {{ form.last_name }}
         </div>
         <div class="form-group">
           {{ form.password.errors }}
-          <label for="{{ form.password.id_for_label }}">Contraseña</label>
+          <label for="{{ form.password.id_for_label }}">Password</label>
           {{ form.password }}
         </div>
       </div>
       <!-- /.box-body -->
 
       <div class="box-footer">
-        <button type="submit" class="btn btn-primary">Editar</button>
+        <button type="submit" class="btn btn-primary">Edit</button>
       </div>
     </form>
 
     <script>
       $(document).ready(function(){
         $('input').addClass('form-control');
-        $('#id_username').attr("placeholder", "Usuario");
+        $('#id_username').attr("placeholder", "Username");
         $('#id_email').attr("placeholder", "Email");
-        $('#id_password').attr("placeholder", "Contraseña");
-        $('#id_first_name').attr("placeholder", "Nombre");
+        $('#id_password').attr("placeholder", "Password");
+        $('#id_first_name').attr("placeholder", "Name");
         $('#id_first_name').attr("value", "{{ user.first_name }}");
-        $('#id_last_name').attr("placeholder", "Apellido");
+        $('#id_last_name').attr("placeholder", "Last Name");
         $('#id_last_name').attr("value", "{{ user.last_name }}");
       });
     </script>

@@ -3,7 +3,7 @@ from django.conf.urls import url
 from views import *
 
 urlpatterns = [
-    url(r'^index/$', Index.as_view(), name='index'),
+    url(r'^dashboard/$', Dashboard.as_view(), name='dashboard'),
     # **********************   CREATE/LIST ***********************
     url(r'^users/$', UserListCreate.as_view(), name='users'),
     url(r'^storemanagers/add/$', StoreManagerFormCreate.as_view(), name='storemanagers-add'),
@@ -15,7 +15,9 @@ urlpatterns = [
     url(r'^users/(?P<pk>[0-9]+)/$', UserView.as_view(), name='user'),
     url(r'^storemanagers/(?P<pk>[0-9]+)/$', StoreManagerView.as_view(), name='storemanager'),
     url(r'^storemanagers/(?P<pk>[0-9]+)/edit/$', StoreManagerFormEdit.as_view(), name='storemanager-edit'),
+    url(r'^storemanagers/(?P<pk>[0-9]+)/edit/status$', StoreManagerEditStatus.as_view(), name='storemanager-edit-status'),
     url(r'^promotionmanagers/(?P<pk>[0-9]+)/$', PromotionManagerView.as_view(), name='promotionmanager'),
     url(r'^promotionmanagers/(?P<pk>[0-9]+)/edit/$', PromotionManagerFormEdit.as_view(), name='promotionmanager-edit'),
+    url(r'^promotionmanagers/(?P<pk>[0-9]+)/edit/status$', PromotionManagerEditStatus.as_view(), name='promotionmanager-edit-status'),
     url(r'^admins/(?P<pk>[0-9]+)/$', AdminView.as_view(), name='admin'),
 ]
