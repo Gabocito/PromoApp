@@ -22,7 +22,7 @@ class Dashboard(APIView):
     template_name = 'promoapp_user/dashboard.html'
 
     def get(self, request):
-        """ Get the type of user that's online """
+        """ Get the type of user that logged in """
         if StoreManager.objects.filter(user_id=request.user.pk):
             user_type = 'SM'    
         elif PromotionManager.objects.filter(user_id=request.user.pk):
@@ -107,8 +107,7 @@ class StoreManagerListCreate(APIView):
                     'username': form.cleaned_data['username'],
                     'email': form.cleaned_data['email'],
                     'password': form.cleaned_data['password']
-                },
-                'is_active': True
+                }
             }
             serializer = StoreManagerCreateSerializer(data=data)
 
@@ -127,7 +126,7 @@ class StoreManagerListCreate(APIView):
         u.email = data['user']['email']
         u.save()
 
-        s = StoreManager.objects.create(user=u, is_active=data['is_active'])
+        s = StoreManager.objects.create(user=u)
 
         storemanagers = StoreManager.objects.all()
         serializer = StoreManagerSerializer(storemanagers, many=True)
@@ -163,8 +162,7 @@ class PromotionManagerListCreate(APIView):
                     'username': form.cleaned_data['username'],
                     'email': form.cleaned_data['email'],
                     'password': form.cleaned_data['password']
-                },
-                'is_active': True
+                }
             }
             serializer = PromotionManagerCreateSerializer(data=data)
 
@@ -183,7 +181,7 @@ class PromotionManagerListCreate(APIView):
         u.email = data['user']['email']
         u.save()
 
-        s = PromotionManager.objects.create(user=u, is_active=data['is_active'])
+        s = PromotionManager.objects.create(user=u)
 
         promotionmanagers = PromotionManager.objects.all()
         serializer = PromotionManagerSerializer(promotionmanagers, many=True)
@@ -245,6 +243,20 @@ class UserView(APIView):
 # """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 # """                          Store Manager                                """
 # """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+class StoreManagerDelete(APIView):
+    def get_object(self, pk):
+        try:
+            return StoreManager.objects.get(pk=pk)
+        except StoreManager.DoesNotExist:
+            raise Http404
+
+    def post(self, request, pk, format=None):
+        storemanager = self.get_object(pk)
+        user = storemanager.user
+        user.delete()
+        storemanager.delete()
+        return redirect('storemanagers')
+
 class StoreManagerEditStatus(APIView):
     def get_object(self, pk):
         try:
@@ -260,7 +272,7 @@ class StoreManagerEditStatus(APIView):
             storemanager.is_active = is_active
             storemanager.save()
         except:
-            return Response({'errors': 'Unknown fields!'}, 
+            return Response({'is_active': 'This field is required.'}, 
                                 status=status.HTTP_400_BAD_REQUEST)
 
         return redirect('storemanagers')        
@@ -363,6 +375,20 @@ class StoreManagerView(APIView):
 # """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 # """                         Promotion Manager                             """
 # """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+class PromotionManagerDelete(APIView):
+    def get_object(self, pk):
+        try:
+            return PromotionManager.objects.get(pk=pk)
+        except PromotionManager.DoesNotExist:
+            raise Http404
+
+    def post(self, request, pk, format=None):
+        promotionmanager = self.get_object(pk)
+        user = promotionmanager.user
+        user.delete()
+        promotionmanager.delete()
+        return redirect('promotionmanagers')
+
 class PromotionManagerEditStatus(APIView):
     def get_object(self, pk):
         try:
@@ -378,7 +404,7 @@ class PromotionManagerEditStatus(APIView):
             promotionmanager.is_active = is_active
             promotionmanager.save()
         except:
-            return Response({'errors': 'Unknown fields!'}, 
+            return Response({'is_active': 'This field is required.'}, 
                                 status=status.HTTP_400_BAD_REQUEST)
 
         return redirect('promotionmanagers')

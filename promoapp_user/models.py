@@ -16,7 +16,6 @@ class User(models.Model):
         ('TW', 'Twitter'),
     )
     acc_type = models.CharField(max_length=200, choices=CHOICES, default='FB')
-    # promotions = models.ManyToManyField('promoapp_business.Promotion')
 
     def __unicode__(self):
         return self.user.username + ' ' + self.acc_type
@@ -24,7 +23,7 @@ class User(models.Model):
 class StoreManager(models.Model):
     user = models.OneToOneField(django_User)
     user_type = models.CharField(max_length=200, default='Store Manager')
-    is_active = models.BooleanField()
+    is_active = models.BooleanField(default=True)
     stores = models.ManyToManyField('promoapp_business.Store')
 
     def __unicode__(self):
@@ -33,7 +32,7 @@ class StoreManager(models.Model):
 class PromotionManager(models.Model):
     user = models.OneToOneField(django_User)
     user_type = models.CharField(max_length=200, default='Promotion Manager')
-    is_active = models.BooleanField()
+    is_active = models.BooleanField(default=True)
 
     def __unicode__(self):
         return self.user.username

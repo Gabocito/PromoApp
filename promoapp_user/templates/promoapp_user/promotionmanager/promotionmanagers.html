@@ -31,11 +31,14 @@
             <td>{{ u.user.last_name }}</td>
             <td>{{ u.user.email }}</td>
             {% if u.is_active %}
-                <td><form action="{% url 'promotionmanager-edit-status' pk=u.pk %}" method="post">{% csrf_token %}<input name="is_active" type="hidden" value="False"><button class="btn-link" type="submit"><i id="activate" title="Set active" class="fa fa-check"></i></button></form></td>
+                <td><form action="{% url 'promotionmanager-edit-status' pk=u.pk %}" method="post">{% csrf_token %}<input name="is_active" type="hidden" value="False"><button class="btn-link" type="submit"><div title="Set inactive">Active</div></button></form></td>
             {% else %}
-                <td><form action="{% url 'promotionmanager-edit-status' pk=u.pk %}" method="post">{% csrf_token %}<input name="is_active" type="hidden" value="True"><button class="btn-link" type="submit"><i id="activate" title="Set active" class="fa fa-close"></i></button></form></td>
+                <td><form action="{% url 'promotionmanager-edit-status' pk=u.pk %}" method="post">{% csrf_token %}<input name="is_active" type="hidden" value="True"><button class="btn-link" type="submit"><div title="Set active">Inactive</div></button></form></td>
             {% endif %}
-            <td><a title="Edit" href="{% url 'promotionmanager-edit' pk=u.pk %}"><i class="fa fa-edit"></i></a></td>
+            <td>
+                <a title="Edit" href="{% url 'promotionmanager-edit' pk=u.pk %}"><i class="icon-btn fa fa-edit"></i></a>
+                <form action="{% url 'promotionmanager-delete' pk=u.pk %}" method="post" class="form-inline">{% csrf_token %}<button class="btn-link" type="submit"><i title="Delete" class="fa fa-trash"></i></button></form>
+            </td>
         </tr>
     {% endfor %}
 {% endblock %}

@@ -11,6 +11,10 @@ urlpatterns = [
     # ****************   DETAILS/UPDATE/DELETE *******************
     url(r'^promotions/(?P<pk>[0-9]+)/$', PromotionView.as_view(), name='promotion'),
     url(r'^promotions/(?P<pk>[0-9]+)/edit/$', PromotionFormEdit.as_view(), name='promotion-edit'),
+    url(r'^promotions/(?P<pk>[0-9]+)/edit/status/$', PromotionEditStatus.as_view(), name='promotion-edit-status'),
+    url(r'^promotions/(?P<pk>[0-9]+)/delete/$', PromotionDelete.as_view(), name='promotion-delete'),
     url(r'^advertisingcampaigns/(?P<pk>[0-9]+)/$', AdvertisingCampaignView.as_view(), name='advertisingcampaign'),
     url(r'^advertisingcampaigns/(?P<pk>[0-9]+)/edit/$', AdvertisingCampaignFormEdit.as_view(), name='advertisingcampaign-edit'),
+    url(r'^advertisingcampaigns/(?P<pk>[0-9]+)/edit/status/$', AdvertisingCampaignEditStatus.as_view(), name='advertisingcampaign-edit-status'),
+    url(r'^advertisingcampaigns/(?P<pk>[0-9]+)/delete/$', AdvertisingCampaignDelete.as_view(), name='advertisingcampaign-delete'),
 ]

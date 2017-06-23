@@ -9,7 +9,7 @@ from models import *
 
 from forms import *
 
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, redirect
 from django.http import Http404
 
 # *****************************************************************************
@@ -109,6 +109,38 @@ class AdvertisingCampaignListCreate(APIView):
 # """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 # """                             Promotion                                 """
 # """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+class PromotionDelete(APIView):
+    def get_object(self, pk):
+        try:
+            return Promotion.objects.get(pk=pk)
+        except Promotion.DoesNotExist:
+            raise Http404
+
+    def post(self, request, pk, format=None):
+        promotion = self.get_object(pk)
+        promotion.delete()
+        return redirect('promotions')
+
+class PromotionEditStatus(APIView):
+    def get_object(self, pk):
+        try:
+            return Promotion.objects.get(pk=pk)
+        except Promotion.DoesNotExist:
+            raise Http404
+
+    def post(self, request, pk, format=None):
+        promotion = self.get_object(pk)
+
+        try:
+            is_active = True if request.POST['is_active'] == 'True' else 'False'
+            promotion.is_active = is_active
+            promotion.save()
+        except:
+            return Response({'is_active': 'This field is required.'}, 
+                                status=status.HTTP_400_BAD_REQUEST)
+
+        return redirect('promotions')
+
 class PromotionFormEdit(APIView):
     renderer_classes = [TemplateHTMLRenderer]
     template_name = 'promoapp_campaign/promotion/edit.html'
@@ -175,6 +207,38 @@ class PromotionView(APIView):
 # """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 # """                       Advertising Campaign                            """
 # """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+class AdvertisingCampaignDelete(APIView):
+    def get_object(self, pk):
+        try:
+            return AdvertisingCampaign.objects.get(pk=pk)
+        except AdvertisingCampaign.DoesNotExist:
+            raise Http404
+
+    def post(self, request, pk, format=None):
+        advertisingcampaign = self.get_object(pk)
+        advertisingcampaign.delete()
+        return redirect('advertisingcampaigns')
+
+class AdvertisingCampaignEditStatus(APIView):
+    def get_object(self, pk):
+        try:
+            return AdvertisingCampaign.objects.get(pk=pk)
+        except AdvertisingCampaign.DoesNotExist:
+            raise Http404
+
+    def post(self, request, pk, format=None):
+        advertisingcampaign = self.get_object(pk)
+
+        try:
+            is_active = True if request.POST['is_active'] == 'True' else 'False'
+            advertisingcampaign.is_active = is_active
+            advertisingcampaign.save()
+        except:
+            return Response({'is_active': 'This field is required.'}, 
+                                status=status.HTTP_400_BAD_REQUEST)
+
+        return redirect('advertisingcampaigns')
+
 class AdvertisingCampaignFormEdit(APIView):
     renderer_classes = [TemplateHTMLRenderer]
     template_name = 'promoapp_campaign/advertisingcampaign/edit.html'

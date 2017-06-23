@@ -9,13 +9,13 @@ class CompanySerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Company
-        fields = ('pk', 'name', 'rif', 'commercial_sector', 'address', 'email')
+        fields = ('pk', 'name', 'rif', 'commercial_sector', 'address', 'email', 'is_active')
 
 class StoreSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Store
-        fields = ('pk', 'name', 'rif', 'address', 'email')
+        fields = ('pk', 'name', 'rif', 'address', 'email', 'is_active')
 
 # *****************************************************************************
 # **********************            CREATE           **************************

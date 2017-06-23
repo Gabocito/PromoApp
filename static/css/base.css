@@ -1,3 +1,7 @@
-.navbar {
-    margin-bottom: 50px !important;
+.edit-btn {
+    padding-top: 7px;
+}
+
+.form-inline {
+    display: inline;
 }

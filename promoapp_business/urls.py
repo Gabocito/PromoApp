@@ -11,6 +11,10 @@ urlpatterns = [
     # ****************   DETAILS/UPDATE/DELETE *******************
     url(r'^companies/(?P<pk>[0-9]+)/$', CompanyView.as_view(), name='company'),
     url(r'^companies/(?P<pk>[0-9]+)/edit/$', CompanyFormEdit.as_view(), name='company-edit'),
+    url(r'^companies/(?P<pk>[0-9]+)/edit/status/$', CompanyEditStatus.as_view(), name='company-edit-status'),
+    url(r'^stores/(?P<pk>[0-9]+)/company/$', CompanyDelete.as_view(), name='company-delete'),
     url(r'^stores/(?P<pk>[0-9]+)/$', StoreView.as_view(), name='store'),
     url(r'^stores/(?P<pk>[0-9]+)/edit/$', StoreFormEdit.as_view(), name='store-edit'),
+    url(r'^stores/(?P<pk>[0-9]+)/edit/status/$', StoreEditStatus.as_view(), name='store-edit-status'),
+    url(r'^stores/(?P<pk>[0-9]+)/delete/$', StoreDelete.as_view(), name='store-delete'),
 ]

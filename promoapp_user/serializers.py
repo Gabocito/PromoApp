@@ -53,21 +53,21 @@ class UserCreateSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ('user', 'acc_type')
+        fields = ('user',)
 
 class StoreManagerCreateSerializer(serializers.ModelSerializer):
     user = DjangoUserCreateSerializer()
 
     class Meta:
         model = StoreManager
-        fields = ('user', 'is_active')
+        fields = ('user',)
 
 class PromotionManagerCreateSerializer(serializers.ModelSerializer):
     user = DjangoUserCreateSerializer()
 
     class Meta:
         model = PromotionManager
-        fields = ('user', 'is_active')
+        fields = ('user',)
 
 class AdminCreateSerializer(serializers.ModelSerializer):
     user = DjangoUserCreateSerializer()

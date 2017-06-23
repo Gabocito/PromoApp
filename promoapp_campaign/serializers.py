@@ -8,13 +8,13 @@ from .models import *
 class PromotionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Promotion
-        fields = ('pk', 'description', 'products', 'discount')
+        fields = ('pk', 'description', 'products', 'discount', 'is_active')
 
 class AdvertisingCampaignSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = AdvertisingCampaign
-        fields = ('pk', 'target', 'start_date', 'end_date')
+        fields = ('pk', 'target', 'start_date', 'end_date', 'is_active')
 
 # *****************************************************************************
 # **********************            CREATE           **************************

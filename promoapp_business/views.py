@@ -9,7 +9,7 @@ from models import *
 
 from forms import *
 
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, redirect
 from django.http import Http404
 
 # *****************************************************************************
@@ -65,6 +65,26 @@ class CompanyListCreate(APIView):
 # """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 # """                               Store                                   """
 # """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+class StoreEditStatus(APIView):
+    def get_object(self, pk):
+        try:
+            return Store.objects.get(pk=pk)
+        except Store.DoesNotExist:
+            raise Http404
+
+    def post(self, request, pk, format=None):
+        store = self.get_object(pk)
+
+        try:
+            is_active = True if request.POST['is_active'] == 'True' else 'False'
+            store.is_active = is_active
+            store.save()
+        except:
+            return Response({'is_active': 'This field is required.'}, 
+                                status=status.HTTP_400_BAD_REQUEST)
+
+        return redirect('stores')
+
 class StoreFormCreate(APIView):
     renderer_classes = [TemplateHTMLRenderer]
     template_name = 'promoapp_business/store/form.html'
@@ -114,6 +134,38 @@ class StoreListCreate(APIView):
 # """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 # """                              Company                                  """
 # """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+class CompanyDelete(APIView):
+    def get_object(self, pk):
+        try:
+            return Company.objects.get(pk=pk)
+        except Company.DoesNotExist:
+            raise Http404
+
+    def post(self, request, pk, format=None):
+        company = self.get_object(pk)
+        company.delete()
+        return redirect('companies')
+
+class CompanyEditStatus(APIView):
+    def get_object(self, pk):
+        try:
+            return Company.objects.get(pk=pk)
+        except Company.DoesNotExist:
+            raise Http404
+
+    def post(self, request, pk, format=None):
+        company = self.get_object(pk)
+
+        try:
+            is_active = True if request.POST['is_active'] == 'True' else 'False'
+            company.is_active = is_active
+            company.save()
+        except:
+            return Response({'is_active': 'This field is required.'}, 
+                                status=status.HTTP_400_BAD_REQUEST)
+
+        return redirect('companies')
+
 class CompanyFormEdit(APIView):
     renderer_classes = [TemplateHTMLRenderer]
     template_name = 'promoapp_business/company/edit.html'
@@ -182,6 +234,18 @@ class CompanyView(APIView):
 # """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 # """                               Store                                   """
 # """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+class StoreDelete(APIView):
+    def get_object(self, pk):
+        try:
+            return Store.objects.get(pk=pk)
+        except Store.DoesNotExist:
+            raise Http404
+
+    def post(self, request, pk, format=None):
+        store = self.get_object(pk)
+        store.delete()
+        return redirect('stores')
+
 class StoreFormEdit(APIView):
     renderer_classes = [TemplateHTMLRenderer]
     template_name = 'promoapp_business/store/edit.html'
