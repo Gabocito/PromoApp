@@ -20,6 +20,14 @@
           <label>Email</label>
           <input type="email" class="form-control" value="{{ store.email }}" disabled>
         </div>
+        <div class="form-group">
+          <label>Advertising Campaigns</label>
+          <ul class="list-group">
+            {% for a in advertisingcampaigns %}
+              <li class="list-group-item">{{ a }}</li>
+            {% endfor %}
+          </ul>
+        </div>
       </div>
       <!-- /.box-body -->
     </form>

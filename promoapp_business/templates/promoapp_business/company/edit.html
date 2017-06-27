@@ -41,12 +41,6 @@
 
     <script>
       $(document).ready(function(){
-        $('input').addClass('form-control');
-        $('#id_name').attr("placeholder", "Name");
-        $('#id_rif').attr("placeholder", "Rif");
-        $('#id_address').attr("placeholder", "Address");
-        $('#id_commercial_sector').attr("placeholder", "Area");
-        $('#id_email').attr("placeholder", "Email");
         $('#id_name').attr("value", "{{ company.name }}");
         $('#id_rif').attr("value", "{{ company.rif }}");
         $('#id_address').attr("value", "{{ company.address }}");
@@ -54,6 +48,5 @@
         $('#id_email').attr("value", "{{ company.email }}");
       });
     </script>
-
 
 {% endblock %}

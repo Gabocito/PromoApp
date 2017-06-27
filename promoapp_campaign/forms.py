@@ -1,27 +1,50 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from django import forms
-from functools import partial
-DateInput = partial(forms.DateInput, {'class': 'datepicker'})
+from django.forms import ModelForm
+from models import *
 
-class PromotionForm(forms.Form):
-    description = forms.CharField(label='Description', max_length=200)
-    discount = forms.IntegerField(label='Discount', min_value=1, max_value=100)
-    products = forms.CharField(label='Products', max_length=200)
+class PromotionForm(ModelForm):
+    class Meta:
+        model = Promotion
+        fields = ['description', 'discount', 'products']
 
-class PromotionEditForm(forms.Form):
-    description = forms.CharField(label='Description', max_length=200)
-    discount = forms.IntegerField(label='Discount', min_value=1, max_value=100)
-    products = forms.CharField(label='Products', max_length=200)
+    def __init__(self, *args, **kwargs):
+        super(PromotionForm, self).__init__(*args, **kwargs)
+        self.fields['description'].widget.attrs.update({'placeholder': 'Description', 'class': 'form-control'})
+        self.fields['discount'].widget.attrs.update({'placeholder': 'Discount', 'class': 'form-control'})
+        self.fields['products'].widget.attrs.update({'placeholder': 'Products', 'class': 'form-control'})
 
-class AdvertisingCampaignForm(forms.Form):
-    target = forms.CharField(label='Target' ,max_length=32)
-    start_date = forms.DateField(label='Start Date', widget=DateInput())
-    end_date = forms.DateField(label='End Date', widget=DateInput())
+class PromotionEditForm(ModelForm):
+    class Meta:
+        model = Promotion
+        fields = ['description', 'discount', 'products']
 
-class AdvertisingCampaignEditForm(forms.Form):
-    target = forms.CharField(label='Target' ,max_length=32)
-    start_date = forms.DateField(label='Start Date', widget=DateInput())
-    end_date = forms.DateField(label='End Date', widget=DateInput())
-    
+    def __init__(self, *args, **kwargs):
+        super(PromotionEditForm, self).__init__(*args, **kwargs)
+        self.fields['description'].widget.attrs.update({'placeholder': 'Description', 'class': 'form-control'})
+        self.fields['discount'].widget.attrs.update({'placeholder': 'Discount', 'class': 'form-control'})
+        self.fields['products'].widget.attrs.update({'placeholder': 'Products', 'class': 'form-control'})
+
+class AdvertisingCampaignForm(ModelForm):
+    class Meta:
+        model = AdvertisingCampaign
+        fields = ['target', 'start_date', 'end_date']
+
+    def __init__(self, *args, **kwargs):
+        super(AdvertisingCampaignForm, self).__init__(*args, **kwargs)
+        self.fields['target'].widget.attrs.update({'placeholder': 'Target', 'class': 'form-control'})
+        self.fields['start_date'].widget.attrs.update({'placeholder': 'Start Date', 'class': 'form-control'})
+        self.fields['end_date'].widget.attrs.update({'placeholder': 'End Date', 'class': 'form-control'})
+
+class AdvertisingCampaignEditForm(ModelForm):
+    class Meta:
+        model = AdvertisingCampaign
+        fields = ['target', 'start_date', 'end_date', 'promotions']
+
+    def __init__(self, *args, **kwargs):
+        super(AdvertisingCampaignEditForm, self).__init__(*args, **kwargs)
+        self.fields['target'].widget.attrs.update({'placeholder': 'Target', 'class': 'form-control'})
+        self.fields['start_date'].widget.attrs.update({'placeholder': 'Start Date', 'class': 'form-control'})
+        self.fields['end_date'].widget.attrs.update({'placeholder': 'End Date', 'class': 'form-control'})
+        self.fields['promotions'].widget.attrs.update({'class': 'selectpicker'})

@@ -252,7 +252,7 @@ class AdvertisingCampaignFormEdit(APIView):
     def get(self, request, pk, format=None):
         advertisingcampaign = self.get_object(pk)
         serializer = AdvertisingCampaignSerializer(advertisingcampaign)
-        form = AdvertisingCampaignForm()
+        form = AdvertisingCampaignEditForm()
         return Response({'form': form, 'advertisingcampaign': serializer.data})
 
 class AdvertisingCampaignView(APIView):
@@ -268,7 +268,7 @@ class AdvertisingCampaignView(APIView):
     def get(self, request, pk, format=None):
         advertisingcampaign = self.get_object(pk)
         serializer = AdvertisingCampaignSerializer(advertisingcampaign)
-        return Response({'advertisingcampaign': serializer.data})
+        return Response({'advertisingcampaign': serializer.data, 'promotions': advertisingcampaign.promotions.all()})
 
     def post(self, request, pk, format=None):
         advertisingcampaign = self.get_object(pk)
@@ -279,12 +279,15 @@ class AdvertisingCampaignView(APIView):
             # Check format and unique constraint 
             if not serializer.is_valid(): 
                 return Response(serializer.errors, 
-                                status=status.HTTP_400_BAD_REQUEST) 
+                                status=status.HTTP_400_BAD_REQUEST)
 
         data = serializer.data
         advertisingcampaign.target = data['target']
         advertisingcampaign.start_date = data['start_date']
         advertisingcampaign.end_date = data['end_date']
+        for p in form.cleaned_data['promotions']:
+            advertisingcampaign.promotions.add(p)
+
         advertisingcampaign.save()
 
         return Response({'advertisingcampaign': data}, status=status.HTTP_201_CREATED)

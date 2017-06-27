@@ -31,10 +31,6 @@
 
     <script>
       $(document).ready(function(){
-        $('input').addClass('form-control');
-        $('#id_description').attr("placeholder", "Description");
-        $('#id_discount').attr("placeholder", "Discount");
-        $('#id_products').attr("placeholder", "Products");
         $('#id_description').attr("value", "{{ promotion.description }}");
         $('#id_discount').attr("value", "{{ promotion.discount }}");
         $('#id_products').attr("value", "{{ promotion.products }}");

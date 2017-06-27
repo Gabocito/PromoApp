@@ -31,6 +31,14 @@
             <input type="text" class="form-control" value="{{ advertisingcampaign.end_date }}" disabled>
           </div>
         </div>
+        <div class="form-group">
+          <label>Promotions</label>
+          <ul class="list-group">
+            {% for p in promotions %}
+              <li class="list-group-item">{{ p }}</li>
+            {% endfor %}
+          </ul>
+        </div>
       </div>
       <!-- /.box-body -->
     </form>

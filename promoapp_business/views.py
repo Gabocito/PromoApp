@@ -179,7 +179,7 @@ class CompanyFormEdit(APIView):
     def get(self, request, pk, format=None):
         company = self.get_object(pk)
         serializer = CompanySerializer(company)
-        form = CompanyForm()
+        form = CompanyEditForm()
         return Response({'form': form, 'company': serializer.data})
 
 class CompanyView(APIView):
@@ -259,7 +259,7 @@ class StoreFormEdit(APIView):
     def get(self, request, pk, format=None):
         store = self.get_object(pk)
         serializer = StoreSerializer(store)
-        form = StoreForm()
+        form = StoreEditForm()
         return Response({'form': form, 'store': serializer.data})
         
 class StoreView(APIView):
@@ -275,7 +275,7 @@ class StoreView(APIView):
     def get(self, request, pk, format=None):
         store = self.get_object(pk)
         serializer = StoreSerializer(store)
-        return Response({'store': serializer.data})
+        return Response({'store': serializer.data, 'advertisingcampaigns': store.advertisingcampaigns.all()})
 
     def post(self, request, pk, format=None):
         store = self.get_object(pk)
@@ -293,6 +293,9 @@ class StoreView(APIView):
         store.rif = data['rif']
         store.address = data['address']
         store.email = data['email']
+        for a in form.cleaned_data['advertisingcampaigns']:
+            store.advertisingcampaigns.add(a)
+
         store.save()
 
         return Response({'store': data}, status=status.HTTP_201_CREATED)

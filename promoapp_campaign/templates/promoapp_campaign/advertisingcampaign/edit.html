@@ -36,6 +36,11 @@
             {{ form.end_date }}
           </div>
         </div>
+        <div class="form-group">
+          {{ form.promotions.errors }}
+          <label for="{{ form.promotions.id_for_label }}">Promotions</label><br>
+          {{ form.promotions }}
+        </div>
       </div>
       <!-- /.box-body -->
 
@@ -46,10 +51,6 @@
 
     <script>
       $(document).ready(function(){
-        $('input').addClass('form-control');
-        $('#id_target').attr("placeholder", "Target");
-        $('#id_start_date').attr("placeholder", " Start Date");
-        $('#id_end_date').attr("placeholder", " End Date");
         $('#id_target').attr("value", "{{ advertisingcampaign.target }}");
         $('#id_start_date').attr("value", "{{ advertisingcampaign.start_date }}");
         $('#id_end_date').attr("value", "{{ advertisingcampaign.end_date }}");
