@@ -1,46 +1,74 @@
-{% extends 'base.html' %}
+{% extends 'form.html' %}
 
-{% block content %}
+{% block header %}
+  Advertising Campaign
+{% endblock %}
 
-    <form role="form">
-      <div class="box-body">
-        <div class="form-group">
-          <label>Target</label>
-          <div class="input-group">
-            <div class="input-group-addon">
-              <i class="fa fa-star"></i>
-            </div>
-            <input type="text" class="form-control" value="{{ advertisingcampaign.target }}" disabled>
+{% block header_small %}
+  Details
+{% endblock %}
+
+{% block section %}
+  <a href="{% url 'advertisingcampaigns' %}">Campaigns</a>
+{% endblock %}
+
+{% block subsection %}
+  <a href="{% url 'advertisingcampaigns' %}">Advertising Campaigns</a>
+{% endblock %}
+
+{% block sub_subsection %}
+  Details
+{% endblock %}
+
+{% block form_errors %}
+{% endblock %}
+
+{% block form %}
+  <form role="form">
+    <div class="box-body">
+      <div class="form-group">
+        <label>Target</label>
+        <div class="input-group">
+          <div class="input-group-addon">
+            <i class="fa fa-star"></i>
           </div>
+          <input type="text" class="form-control" value="{{ advertisingcampaign.target }}" disabled>
         </div>
-        <div class="form-group">
-          <label>Start Date</label>
-          <div class="input-group">
-            <div class="input-group-addon">
-              <i class="fa fa-calendar"></i>
-            </div>
-            <input type="text" class="form-control" value="{{ advertisingcampaign.start_date }}" disabled>
+      </div>
+      <div class="form-group">
+        <label>Start Date</label>
+        <div class="input-group">
+          <div class="input-group-addon">
+            <i class="fa fa-calendar"></i>
           </div>
+          <input type="text" class="form-control" value="{{ advertisingcampaign.start_date }}" disabled>
         </div>
-        <div class="form-group">
-          <label>End Date</label>
-          <div class="input-group">
-            <div class="input-group-addon">
-              <i class="fa fa-calendar"></i>
-            </div>
-            <input type="text" class="form-control" value="{{ advertisingcampaign.end_date }}" disabled>
+      </div>
+      <div class="form-group">
+        <label>End Date</label>
+        <div class="input-group">
+          <div class="input-group-addon">
+            <i class="fa fa-calendar"></i>
           </div>
+          <input type="text" class="form-control" value="{{ advertisingcampaign.end_date }}" disabled>
         </div>
-        <div class="form-group">
-          <label>Promotions</label>
-          <ul class="list-group">
+      </div>
+      <div class="form-group">
+        <label>Promotions</label>
+        <ul class="list-group">
+          {% if promotions %}
             {% for p in promotions %}
               <li class="list-group-item">{{ p }}</li>
             {% endfor %}
-          </ul>
-        </div>
+          {% else %}
+            <li class="list-group-item">This advertising campaign doesn't have promotions</li>
+          {% endif %}
+        </ul>
       </div>
-      <!-- /.box-body -->
-    </form>
+    </div>
+    <!-- /.box-body -->
+  </form>
+{% endblock %}
 
+{% block form_script %}
 {% endblock %}

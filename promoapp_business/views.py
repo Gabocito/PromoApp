@@ -9,7 +9,7 @@ from models import *
 
 from forms import *
 
-from django.shortcuts import get_object_or_404, redirect
+from django.shortcuts import get_object_or_404, redirect, render
 from django.http import Http404
 
 # *****************************************************************************
@@ -47,20 +47,22 @@ class CompanyListCreate(APIView):
                 return Response(serializer.errors, 
                                 status=status.HTTP_400_BAD_REQUEST) 
 
-        data = serializer.data 
-        
-        c = Company.objects.create(is_active=True)  
-        c.name = data['name']
-        c.rif = data['rif']
-        c.commercial_sector = data['commercial_sector']
-        c.address = data['address']
-        c.email = data['email']
-        c.save()
+            data = serializer.data 
+            
+            c = Company.objects.create(is_active=True)  
+            c.name = data['name']
+            c.rif = data['rif']
+            c.commercial_sector = data['commercial_sector']
+            c.address = data['address']
+            c.email = data['email']
+            c.save()
 
-        companies = Company.objects.all()
-        serializer = CompanySerializer(companies, many=True)
-        
-        return Response({'companies': serializer.data}, status=status.HTTP_201_CREATED)
+            companies = Company.objects.all()
+            serializer = CompanySerializer(companies, many=True)
+            
+            return Response({'companies': serializer.data}, status=status.HTTP_201_CREATED)
+        else:
+            return render(request, 'promoapp_business/company/form.html', {'form': form})
 
 # """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 # """                               Store                                   """
@@ -113,19 +115,21 @@ class StoreListCreate(APIView):
                 return Response(serializer.errors, 
                                 status=status.HTTP_400_BAD_REQUEST) 
 
-        data = serializer.data 
-        
-        s = Store.objects.create()  
-        s.name = data['name']
-        s.rif = data['rif']
-        s.address = data['address']
-        s.email = data['email']
-        s.save()
+            data = serializer.data 
+            
+            s = Store.objects.create()  
+            s.name = data['name']
+            s.rif = data['rif']
+            s.address = data['address']
+            s.email = data['email']
+            s.save()
 
-        stores = Store.objects.all()
-        serializer = StoreSerializer(stores, many=True)
-        
-        return Response({'stores': serializer.data}, status=status.HTTP_201_CREATED)
+            stores = Store.objects.all()
+            serializer = StoreSerializer(stores, many=True)
+            
+            return Response({'stores': serializer.data}, status=status.HTTP_201_CREATED)
+        else:
+            return render(request, 'promoapp_business/store/form.html', {'form': form})
 
 # *****************************************************************************
 # **********************    DETAILS/UPDATE/DELETE   ***************************
@@ -208,15 +212,18 @@ class CompanyView(APIView):
                 return Response(serializer.errors, 
                                 status=status.HTTP_400_BAD_REQUEST) 
 
-        data = serializer.data
-        company.name = data['name']
-        company.rif = data['rif']
-        company.commercial_sector = data['commercial_sector']
-        company.address = data['address']
-        company.email = data['email']
-        company.save()
+            data = serializer.data
+            company.name = data['name']
+            company.rif = data['rif']
+            company.commercial_sector = data['commercial_sector']
+            company.address = data['address']
+            company.email = data['email']
+            company.save()
 
-        return Response({'company': data}, status=status.HTTP_201_CREATED)
+            return Response({'company': data}, status=status.HTTP_201_CREATED)
+        else:
+            serializer = CompanySerializer(company)
+            return render(request, 'promoapp_business/company/edit.html', {'form': form, 'company': serializer.data})
 
     def put(self, request, pk, format=None):
         company = self.get_object(pk)
@@ -288,17 +295,21 @@ class StoreView(APIView):
                 return Response(serializer.errors, 
                                 status=status.HTTP_400_BAD_REQUEST) 
 
-        data = serializer.data
-        store.name = data['name']
-        store.rif = data['rif']
-        store.address = data['address']
-        store.email = data['email']
-        for a in form.cleaned_data['advertisingcampaigns']:
-            store.advertisingcampaigns.add(a)
+            data = serializer.data
+            store.name = data['name']
+            store.rif = data['rif']
+            store.address = data['address']
+            store.email = data['email']
+            for a in form.cleaned_data['advertisingcampaigns']:
+                print "AGREGANDO"
+                print store.advertisingcampaigns.add(a)
 
-        store.save()
+            store.save()
 
-        return Response({'store': data}, status=status.HTTP_201_CREATED)
+            return Response({'store': data}, status=status.HTTP_201_CREATED)
+        else:
+            serializer = StoreSerializer(store)
+            return render(request, 'promoapp_business/store/edit.html', {'form': form, 'store': serializer.data})
 
     def put(self, request, pk, format=None):
         store = self.get_object(pk)

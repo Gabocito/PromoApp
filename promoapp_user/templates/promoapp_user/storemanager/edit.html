@@ -1,54 +1,81 @@
-{% extends 'base.html' %}
+{% extends 'form.html' %}
 
-{% block content %}
+{% block header %}
+  Store Manager
+{% endblock %}
 
-    <form role="form" action="{% url 'storemanager' pk=user.pk %}" method="post">
-      {% csrf_token %}
-      <div class="box-body">
-        {{ form.non_field_errors }}
-        <div class="form-group">
-          <label>Username</label>
-          <input type="text" class="form-control" value="{{ user.username }}" disabled>
-        </div>
-        <div class="form-group">
-          <label>Email</label>
-          <input type="email" class="form-control" value="{{ user.email }}" disabled>
-        </div>
-        <div class="form-group">
-          {{ form.first_name.errors }}
-          <label for="{{ form.first_name.id_for_label }}">Name</label>
-          {{ form.first_name }}
-        </div>
-        <div class="form-group">
-          {{ form.last_name.errors }}
-          <label for="{{ form.last_name.id_for_label }}">Last Name</label>
-          {{ form.last_name }}
-        </div>
-        <div class="form-group">
-          {{ form.password.errors }}
-          <label for="{{ form.password.id_for_label }}">Password</label>
-          {{ form.password }}
-        </div>
+{% block header_small %}
+  Edit
+{% endblock %}
+
+{% block section %}
+  <a href="{% url 'storemanagers' %}">Users</a>
+{% endblock %}
+
+{% block subsection %}
+  <a href="{% url 'storemanagers' %}">Store Managers</a>
+{% endblock %}
+
+{% block sub_subsection %}
+  Edit
+{% endblock %}
+
+{% block form_errors %}
+  {% if form.errors %}
+    <div class="alert alert-error">
+      <button type="button" class="close" data-dismiss="alert">×</button>
+      {% for field in form %} 
+        {% if field.errors %}
+        <li>{{ field.label }}: {{ field.errors|striptags }}</li>
+        {% endif %}
+      {% endfor %}
+    </div>
+  {% endif %}
+{% endblock %}
+
+{% block form %}
+  <form role="form" action="{% url 'storemanager' pk=user.pk %}" method="post">
+    {% csrf_token %}
+    <div class="box-body">
+      {{ form.non_field_errors }}
+      <div class="form-group">
+        <label>Username</label>
+        <input type="text" class="form-control" value="{{ user.username }}" disabled>
       </div>
-      <!-- /.box-body -->
-
-      <div class="box-footer">
-        <button type="submit" class="btn btn-primary">Edit</button>
+      <div class="form-group">
+        <label>Email</label>
+        <input type="email" class="form-control" value="{{ user.email }}" disabled>
       </div>
-    </form>
+      <div class="form-group">
+        {{ form.first_name.errors }}
+        <label for="{{ form.first_name.id_for_label }}">Name</label>
+        {{ form.first_name }}
+      </div>
+      <div class="form-group">
+        {{ form.last_name.errors }}
+        <label for="{{ form.last_name.id_for_label }}">Last Name</label>
+        {{ form.last_name }}
+      </div>
+      <div class="form-group">
+        {{ form.password.errors }}
+        <label for="{{ form.password.id_for_label }}">Password</label>
+        {{ form.password }}
+      </div>
+    </div>
+    <!-- /.box-body -->
 
-    <script>
-      $(document).ready(function(){
-        $('input').addClass('form-control');
-        $('#id_username').attr("placeholder", "Username");
-        $('#id_email').attr("placeholder", "Email");
-        $('#id_password').attr("placeholder", "Password");
-        $('#id_first_name').attr("placeholder", "Name");
-        $('#id_first_name').attr("value", "{{ user.first_name }}");
-        $('#id_last_name').attr("placeholder", "Last Name");
-        $('#id_last_name').attr("value", "{{ user.last_name }}");
-      });
-    </script>
+    <div class="box-footer">
+      <button type="submit" class="btn btn-primary">Edit</button>
+    </div>
+  </form>
+{% endblock %}
 
-
+{% block form_script %}
+  <script>
+    $(document).ready(function(){
+      $('#id_password').attr("type", "password");
+      $('#id_first_name').attr("value", "{{ user.first_name }}");
+      $('#id_last_name').attr("value", "{{ user.last_name }}");
+    });
+  </script>
 {% endblock %}

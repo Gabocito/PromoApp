@@ -2,23 +2,79 @@
 # -*- coding: utf-8 -*-
 
 from django import forms
+from django.forms import ModelForm
+from django.contrib.auth.models import User as django_User
+from .models import User as MyUser, Admin, StoreManager, PromotionManager
 
-class StoreManagerForm(forms.Form):
-    username = forms.CharField(label='Username', max_length=30)
-    email = forms.EmailField()
-    password = forms.CharField(label='Password', max_length=30, widget=forms.PasswordInput)
+class LoginForm(ModelForm):
+    class Meta:
+        model = django_User
+        fields = ['email', 'password']
 
-class StoreManagerEditForm(forms.Form):
-    first_name = forms.CharField(label='Name', max_length=30)
-    last_name = forms.CharField(label='Last Name', max_length=30)
-    password = forms.CharField(label='Password', max_length=30, widget=forms.PasswordInput)
+    def __init__(self, *args, **kwargs):
+        super(LoginForm, self).__init__(*args, **kwargs)
+        self.fields['email'].widget.attrs.update({'placeholder': 'Email', 'class': 'form-control'})
+        self.fields['password'].widget.attrs.update({'placeholder': 'Password', 'class': 'form-control'})
 
-class PromotionManagerForm(forms.Form):
-    username = forms.CharField(label='Username', max_length=30)
-    email = forms.EmailField()
-    password = forms.CharField(label='Password', max_length=30, widget=forms.PasswordInput)
+class DjangoUserForm(ModelForm):
+    class Meta:
+        model = django_User
+        fields = ['username', 'password']
 
-class PromotionManagerEditForm(forms.Form):
-    first_name = forms.CharField(label='Name', max_length=30)
-    last_name = forms.CharField(label='Last Name', max_length=30)
-    password = forms.CharField(label='Password', max_length=30, widget=forms.PasswordInput)
+    def __init__(self, *args, **kwargs):
+        super(DjangoUserForm, self).__init__(*args, **kwargs)
+        self.fields['username'].widget.attrs.update({'placeholder': 'Username', 'class': 'form-control'})
+        self.fields['password'].widget.attrs.update({'placeholder': 'Password', 'class': 'form-control'})
+
+    def clean_username(self):
+        username = self.cleaned_data.get('username')
+        
+        if django_User.objects.filter(username=username).exists():
+            raise forms.ValidationError("This username already exists!")
+
+        return username
+
+class DjangoUserEditForm(ModelForm):
+    class Meta:
+        model = django_User
+        fields = ['first_name', 'last_name', 'password']
+
+    def __init__(self, *args, **kwargs):
+        super(DjangoUserEditForm, self).__init__(*args, **kwargs)
+        self.fields['first_name'].widget.attrs.update({'placeholder': 'Name', 'class': 'form-control'})
+        self.fields['last_name'].widget.attrs.update({'placeholder': 'Last Name', 'class': 'form-control'})
+        self.fields['password'].widget.attrs.update({'placeholder': 'Password', 'class': 'form-control'})
+
+class StoreManagerForm(ModelForm):
+    class Meta:
+        model = StoreManager
+        fields = ['email']
+
+    def __init__(self, *args, **kwargs):
+        super(StoreManagerForm, self).__init__(*args, **kwargs)
+        self.fields['email'].widget.attrs.update({'placeholder': 'Email', 'class': 'form-control'})
+
+    def clean_email(self):
+        email = self.cleaned_data.get('email')
+
+        if StoreManager.objects.filter(email=email).exists():
+            raise forms.ValidationError("This email already exists!")
+
+        return email
+
+class PromotionManagerForm(ModelForm):
+    class Meta:
+        model = PromotionManager
+        fields = ['email']
+
+    def __init__(self, *args, **kwargs):
+        super(PromotionManagerForm, self).__init__(*args, **kwargs)
+        self.fields['email'].widget.attrs.update({'placeholder': 'Email', 'class': 'form-control'})
+
+    def clean_email(self):
+        email = self.cleaned_data.get('email')
+
+        if PromotionManager.objects.filter(email=email).exists():
+            raise forms.ValidationError("This email already exists!")
+
+        return email

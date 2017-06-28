@@ -9,7 +9,7 @@ from models import *
 
 from forms import *
 
-from django.shortcuts import get_object_or_404, redirect
+from django.shortcuts import get_object_or_404, redirect, render
 from django.http import Http404
 
 # *****************************************************************************
@@ -47,18 +47,20 @@ class PromotionListCreate(APIView):
                 return Response(serializer.errors, 
                                 status=status.HTTP_400_BAD_REQUEST) 
 
-        data = serializer.data 
-        
-        p = Promotion.objects.create()  
-        p.description = data['description']
-        p.discount = data['discount']
-        p.products = data['products']
-        p.save()
+            data = serializer.data 
+            
+            p = Promotion.objects.create()  
+            p.description = data['description']
+            p.discount = data['discount']
+            p.products = data['products']
+            p.save()
 
-        promotions = Promotion.objects.all()
-        serializer = PromotionSerializer(promotions, many=True)
-        
-        return Response({'promotions': serializer.data}, status=status.HTTP_201_CREATED)
+            promotions = Promotion.objects.all()
+            serializer = PromotionSerializer(promotions, many=True)
+            
+            return Response({'promotions': serializer.data}, status=status.HTTP_201_CREATED)
+        else:
+            return render(request, 'promoapp_campaign/promotion/form.html', {'form': form})
 
 # """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 # """                       Advertising Campaign                            """
@@ -91,16 +93,18 @@ class AdvertisingCampaignListCreate(APIView):
                 return Response(serializer.errors, 
                                 status=status.HTTP_400_BAD_REQUEST) 
 
-        data = serializer.data 
-        
-        a = AdvertisingCampaign.objects.create(start_date=data['start_date'], end_date=data['end_date'])  
-        a.target = data['target']
-        a.save()
+            data = serializer.data 
+            
+            a = AdvertisingCampaign.objects.create(start_date=data['start_date'], end_date=data['end_date'])  
+            a.target = data['target']
+            a.save()
 
-        advertisingcampaigns = AdvertisingCampaign.objects.all()
-        serializer = AdvertisingCampaignSerializer(advertisingcampaigns, many=True)
+            advertisingcampaigns = AdvertisingCampaign.objects.all()
+            serializer = AdvertisingCampaignSerializer(advertisingcampaigns, many=True)
 
-        return Response({'advertisingcampaigns': serializer.data}, status=status.HTTP_201_CREATED)
+            return Response({'advertisingcampaigns': serializer.data}, status=status.HTTP_201_CREATED)
+        else:
+            return render(request, 'promoapp_campaign/advertisingcampaign/form.html', {'form': form})
 
 # *****************************************************************************
 # **********************    DETAILS/UPDATE/DELETE   ***************************
@@ -154,7 +158,7 @@ class PromotionFormEdit(APIView):
     def get(self, request, pk, format=None):
         promotion = self.get_object(pk)
         serializer = PromotionSerializer(promotion)
-        form = PromotionForm()
+        form = PromotionEditForm()
         return Response({'form': form, 'promotion': serializer.data})
 
 class PromotionView(APIView):
@@ -183,13 +187,16 @@ class PromotionView(APIView):
                 return Response(serializer.errors, 
                                 status=status.HTTP_400_BAD_REQUEST) 
 
-        data = serializer.data
-        promotion.description = data['description']
-        promotion.discount = data['discount']
-        promotion.products = data['products']
-        promotion.save()
+            data = serializer.data
+            promotion.description = data['description']
+            promotion.discount = data['discount']
+            promotion.products = data['products']
+            promotion.save()
 
-        return Response({'promotion': data}, status=status.HTTP_201_CREATED)
+            return Response({'promotion': data}, status=status.HTTP_201_CREATED)
+        else:
+            serializer = PromotionSerializer(promotion)
+            return render(request, 'promoapp_campaign/promotion/edit.html', {'form': form, 'promotion': serializer.data})
 
     def put(self, request, pk, format=None):
         promotion = self.get_object(pk)
@@ -281,16 +288,19 @@ class AdvertisingCampaignView(APIView):
                 return Response(serializer.errors, 
                                 status=status.HTTP_400_BAD_REQUEST)
 
-        data = serializer.data
-        advertisingcampaign.target = data['target']
-        advertisingcampaign.start_date = data['start_date']
-        advertisingcampaign.end_date = data['end_date']
-        for p in form.cleaned_data['promotions']:
-            advertisingcampaign.promotions.add(p)
+            data = serializer.data
+            advertisingcampaign.target = data['target']
+            advertisingcampaign.start_date = data['start_date']
+            advertisingcampaign.end_date = data['end_date']
+            for p in form.cleaned_data['promotions']:
+                advertisingcampaign.promotions.add(p)
 
-        advertisingcampaign.save()
+            advertisingcampaign.save()
 
-        return Response({'advertisingcampaign': data}, status=status.HTTP_201_CREATED)
+            return Response({'advertisingcampaign': data}, status=status.HTTP_201_CREATED)
+        else:
+            serializer = AdvertisingCampaignSerializer(advertisingcampaign)
+            return render(request, 'promoapp_campaign/advertisingcampaign/edit.html', {'form': form, 'advertisingcampaign': serializer.data})
 
     def put(self, request, pk, format=None):
         advertisingcampaign = self.get_object(pk)

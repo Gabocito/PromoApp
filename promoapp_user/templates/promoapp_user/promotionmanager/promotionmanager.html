@@ -1,31 +1,55 @@
-{% extends 'base.html' %}
+{% extends 'form.html' %}
 
-{% block content %}
+{% block header %}
+  Promotion Manager
+{% endblock %}
 
-    <form role="form">
-      <div class="box-body">
-        <div class="form-group">
-          <label>Username</label>
-          <input type="text" class="form-control" value="{{ user.username }}" disabled>
-        </div>
-        <div class="form-group">
-          <label>Email</label>
-          <input type="email" class="form-control" value="{{ user.email }}" disabled>
-        </div>
-        <div class="form-group">
-          <label>Name</label>
-          <input type="text" class="form-control" value="{{ user.first_name }}" disabled>
-        </div>
-        <div class="form-group">
-          <label>Last Name</label>
-          <input type="text" class="form-control" value="{{ user.last_name }}" disabled>
-        </div>
-        <div class="form-group">
-          <label>Status</label>
-          <input type="text" class="form-control" value="{{ user.is_active }}" disabled>
-        </div>
+{% block header_small %}
+  Details
+{% endblock %}
+
+{% block section %}
+  <a href="{% url 'promotionmanagers' %}">Users</a>
+{% endblock %}
+
+{% block subsection %}
+  <a href="{% url 'promotionmanagers' %}">Promotion Managers</a>
+{% endblock %}
+
+{% block sub_subsection %}
+  Details
+{% endblock %}
+
+{% block form_errors %}
+{% endblock %}
+
+{% block form %}
+  <form role="form">
+    <div class="box-body">
+      <div class="form-group">
+        <label>Username</label>
+        <input type="text" class="form-control" value="{{ user.username }}" disabled>
       </div>
-      <!-- /.box-body -->
-    </form>
+      <div class="form-group">
+        <label>Email</label>
+        <input type="email" class="form-control" value="{{ user.email }}" disabled>
+      </div>
+      <div class="form-group">
+        <label>Name</label>
+        <input type="text" class="form-control" value="{{ user.first_name }}" disabled>
+      </div>
+      <div class="form-group">
+        <label>Last Name</label>
+        <input type="text" class="form-control" value="{{ user.last_name }}" disabled>
+      </div>
+      <div class="form-group">
+        <label>Status</label>
+        <input type="text" class="form-control" value="{{ user.is_active }}" disabled>
+      </div>
+    </div>
+    <!-- /.box-body -->
+  </form>
+{% endblock %}
 
+{% block form_script %}
 {% endblock %}

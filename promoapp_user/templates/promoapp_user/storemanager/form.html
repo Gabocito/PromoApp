@@ -1,42 +1,77 @@
-{% extends 'base.html' %}
+{% extends 'form.html' %}
 
-{% block content %}
+{% block header %}
+  Store Manager
+{% endblock %}
 
-    <form role="form" action="{% url 'storemanagers' %}" method="post">
-      {% csrf_token %}
-      <div class="box-body">
-        {{ form.non_field_errors }}
-        <div class="form-group">
-          {{ form.username.errors }}
-          <label for="{{ form.username.id_for_label }}">Username</label>
-          {{ form.username }}
-        </div>
-        <div class="form-group">
-          {{ form.email.errors }}
-          <label for="{{ form.email.id_for_label }}">Email</label>
-          {{ form.email }}
-        </div>
-        <div class="form-group">
-          {{ form.password.errors }}
-          <label for="{{ form.password.id_for_label }}">Password</label>
-          {{ form.password }}
-        </div>
+{% block header_small %}
+  Add
+{% endblock %}
+
+{% block section %}
+  <a href="{% url 'storemanagers' %}">Users</a>
+{% endblock %}
+
+{% block subsection %}
+  <a href="{% url 'storemanagers' %}">Store Managers</a>
+{% endblock %}
+
+{% block sub_subsection %}
+  Add
+{% endblock %}
+
+{% block form_errors %}
+  {% if sm_form.errors or user_form.errors%}
+    <div class="alert alert-error">
+      <button type="button" class="close" data-dismiss="alert">×</button>
+      {% for field in sm_form %} 
+        {% if field.errors %}
+        <li>{{ field.label }}: {{ field.errors|striptags }}</li>
+        {% endif %}
+      {% endfor %}
+      {% for field in user_form %} 
+        {% if field.errors %}
+        <li>{{ field.label }}: {{ field.errors|striptags }}</li>
+        {% endif %}
+      {% endfor %}
+    </div>
+  {% endif %}
+{% endblock %}
+
+{% block form %}
+  <form role="form" action="{% url 'storemanagers' %}" method="post">
+    {% csrf_token %}
+    <div class="box-body">
+      {{ user_form.non_field_errors }}
+      {{ sm_form.non_field_errors }}
+      <div class="form-group">
+        {{ user_form.username.errors }}
+        <label for="{{ user_form.username.id_for_label }}">Username</label>
+        {{ user_form.username }}
       </div>
-      <!-- /.box-body -->
-
-      <div class="box-footer">
-        <button type="submit" class="btn btn-primary">Add</button>
+      <div class="form-group">
+        {{ sm_form.email.errors }}
+        <label for="{{ sm_form.email.id_for_label }}">Email</label>
+        {{ sm_form.email }}
       </div>
-    </form>
+      <div class="form-group">
+        {{ user_form.password.errors }}
+        <label for="{{ user_form.password.id_for_label }}">Password</label>
+        {{ user_form.password }}
+      </div>
+    </div>
+    <!-- /.box-body -->
 
-    <script>
-      $(document).ready(function(){
-        $('input').addClass('form-control');
-        $('#id_username').attr("placeholder", "Username");
-        $('#id_email').attr("placeholder", "Email");
-        $('#id_password').attr("placeholder", "Password");
-      });
-    </script>
+    <div class="box-footer">
+      <button type="submit" class="btn btn-primary">Add</button>
+    </div>
+  </form>
+{% endblock %}
 
-
+{% block form_script %}
+  <script>
+    $(document).ready(function(){
+      $('#id_password').attr("type", "password");
+    });
+  </script>
 {% endblock %}

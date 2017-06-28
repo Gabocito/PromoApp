@@ -1,23 +1,47 @@
-{% extends 'base.html' %}
+{% extends 'form.html' %}
 
-{% block content %}
+{% block header %}
+  Promotion
+{% endblock %}
 
-    <form role="form">
-      <div class="box-body">
-        <div class="form-group">
-          <label>Description</label>
-          <input type="text" class="form-control" value="{{ promotion.description }}" disabled>
-        </div>
-        <div class="form-group">
-          <label>Discount</label>
-          <input type="text" class="form-control" value="{{ promotion.discount }}%" disabled>
-        </div>
-        <div class="form-group">
-          <label>Products</label>
-          <input type="text" class="form-control" value="{{ promotion.products }}" disabled>
-        </div>
+{% block header_small %}
+  Details
+{% endblock %}
+
+{% block section %}
+  <a href="{% url 'promotions' %}">Campaigns</a>
+{% endblock %}
+
+{% block subsection %}
+  <a href="{% url 'promotions' %}">Promotions</a>
+{% endblock %}
+
+{% block sub_subsection %}
+  Details
+{% endblock %}
+
+{% block form_errors %}
+{% endblock %}
+
+{% block form %}
+  <form role="form">
+    <div class="box-body">
+      <div class="form-group">
+        <label>Description</label>
+        <input type="text" class="form-control" value="{{ promotion.description }}" disabled>
       </div>
-      <!-- /.box-body -->
-    </form>
+      <div class="form-group">
+        <label>Discount</label>
+        <input type="text" class="form-control" value="{{ promotion.discount }}%" disabled>
+      </div>
+      <div class="form-group">
+        <label>Products</label>
+        <input type="text" class="form-control" value="{{ promotion.products }}" disabled>
+      </div>
+    </div>
+    <!-- /.box-body -->
+  </form>
+{% endblock %}
 
+{% block form_script %}
 {% endblock %}

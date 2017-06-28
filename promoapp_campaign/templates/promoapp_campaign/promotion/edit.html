@@ -1,41 +1,73 @@
-{% extends 'base.html' %}
+{% extends 'form.html' %}
 
-{% block content %}
+{% block header %}
+  Promotion
+{% endblock %}
 
-    <form role="form" action="{% url 'promotion' pk=promotion.pk %}" method="post">
-      {% csrf_token %}
-      <div class="box-body">
-        {{ form.non_field_errors }}
-        <div class="form-group">
-          {{ form.description.errors }}
-          <label for="{{ form.description.id_for_label }}">Description</label>
-          {{ form.description }}
-        </div>
-        <div class="form-group">
-          {{ form.discount.errors }}
-          <label for="{{ form.discount.id_for_label }}">Discount</label>
-          {{ form.discount }}
-        </div>
-        <div class="form-group">
-          {{ form.products.errors }}
-          <label for="{{ form.products.id_for_label }}">Products</label>
-          {{ form.products }}
-        </div>
+{% block header_small %}
+  Edit
+{% endblock %}
+
+{% block section %}
+  <a href="{% url 'promotions' %}">Campaigns</a>
+{% endblock %}
+
+{% block subsection %}
+  <a href="{% url 'promotions' %}">Promotions</a>
+{% endblock %}
+
+{% block sub_subsection %}
+  Edit
+{% endblock %}
+
+{% block form_errors %}
+  {% if form.errors %}
+    <div class="alert alert-error">
+      <button type="button" class="close" data-dismiss="alert">×</button>
+      {% for field in form %} 
+        {% if field.errors %}
+        <li>{{ field.label }}: {{ field.errors|striptags }}</li>
+        {% endif %}
+      {% endfor %}
+    </div>
+  {% endif %}
+{% endblock %}
+
+{% block form %}
+  <form role="form" action="{% url 'promotion' pk=promotion.pk %}" method="post">
+    {% csrf_token %}
+    <div class="box-body">
+      {{ form.non_field_errors }}
+      <div class="form-group">
+        {{ form.description.errors }}
+        <label for="{{ form.description.id_for_label }}">Description</label>
+        {{ form.description }}
       </div>
-      <!-- /.box-body -->
-
-      <div class="box-footer">
-        <button type="submit" class="btn btn-primary">Edit</button>
+      <div class="form-group">
+        {{ form.discount.errors }}
+        <label for="{{ form.discount.id_for_label }}">Discount</label>
+        {{ form.discount }}
       </div>
-    </form>
+      <div class="form-group">
+        {{ form.products.errors }}
+        <label for="{{ form.products.id_for_label }}">Products</label>
+        {{ form.products }}
+      </div>
+    </div>
+    <!-- /.box-body -->
 
-    <script>
-      $(document).ready(function(){
-        $('#id_description').attr("value", "{{ promotion.description }}");
-        $('#id_discount').attr("value", "{{ promotion.discount }}");
-        $('#id_products').attr("value", "{{ promotion.products }}");
-      });
-    </script>
+    <div class="box-footer">
+      <button type="submit" class="btn btn-primary">Edit</button>
+    </div>
+  </form>
+{% endblock %}
 
-
+{% block form_script %}
+  <script>
+    $(document).ready(function(){
+      $('#id_description').attr("value", "{{ promotion.description }}");
+      $('#id_discount').attr("value", "{{ promotion.discount }}");
+      $('#id_products').attr("value", "{{ promotion.products }}");
+    });
+  </script>
 {% endblock %}

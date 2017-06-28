@@ -1,13 +1,16 @@
 {% extends 'table.html' %}
 
-{% block header%}
-<h1>
+{% block header %}
     Users
-</h1>
 {% endblock %}
 
-{% block section %} <li>Users</li> {% endblock %}
-{% block subsection %} <li class="active">Store Managers</li> {% endblock %}
+{% block section %}
+    Users
+{% endblock %}
+
+{% block subsection %}
+    Store Managers
+{% endblock %}
 
 {% block table_title %}
     <h3 class="box-title">Store Managers</h3>
@@ -25,12 +28,11 @@
                     
 {% block table_body %}    
     {% for u in users %}
-
         <tr>
             <td><a title="Details" href="{% url 'storemanager' pk=u.pk %}">{{ u.user.username }}</a></td>
             <td>{{ u.user.first_name }}</td>
             <td>{{ u.user.last_name }}</td>
-            <td>{{ u.user.email }}</td>
+            <td>{{ u.email }}</td>
             {% if u.is_active %}
                 <td><form action="{% url 'storemanager-edit-status' pk=u.pk %}" method="post">{% csrf_token %}<input name="is_active" type="hidden" value="False"><button class="btn-link" type="submit"><div title="Set inactive">Active</div></button></form></td>
             {% else %}
@@ -41,7 +43,6 @@
                 <form action="{% url 'storemanager-delete' pk=u.pk %}" method="post" class="form-inline">{% csrf_token %}<button class="btn-link" type="submit"><i title="Delete" class="fa fa-trash"></i></button></form>
             </td>
         </tr>
-
     {% endfor %}
 {% endblock %}
                

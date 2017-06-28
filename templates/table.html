@@ -25,12 +25,20 @@
 {% block content %}
   <!-- Content Header (Page header) -->
     <section class="content-header">
-      {% block header%}
-      {% endblock %}
+      <h1>
+        {% block header %}
+        {% endblock %}
+      </h1>
       <ol class="breadcrumb">
-        <li><a href="/index"><i class="fa fa-dashboard"></i> Home</a></li>
-        {% block section %}{% endblock %}
-        {% block subsection %}{% endblock %}
+        <li><a href="{% url 'dashboard' %}"><i class="fa fa-dashboard"></i> Home</a></li>
+        <li>
+          {% block section %}
+          {% endblock %}
+        </li>
+        <li class="active">
+          {% block subsection %}
+          {% endblock %}
+        </li>
       </ol>
     </section>
 
@@ -38,7 +46,7 @@
     <section class="content">
       <div class="row">
         <div class="col-xs-12">
-          <div class="box">
+          <div class="box box-primary">
             <div class="box-header">
                 {% block table_title %}
                 {% endblock %}
