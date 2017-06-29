@@ -214,6 +214,28 @@ class PromotionView(APIView):
 # """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 # """                       Advertising Campaign                            """
 # """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+class AdvertisingCampaignRemovePromotion(APIView):
+    def get_object(self, pk, obj):
+        if obj == 'AdvertisingCampaign':
+            try:
+                return AdvertisingCampaign.objects.get(pk=pk)
+            except AdvertisingCampaign.DoesNotExist:
+                raise Http404
+        else:
+            try:
+                return Promotion.objects.get(pk=pk)
+            except Promotion.DoesNotExist:
+                raise Http404
+
+    def post(self, request, pk, promotion, format=None):
+        advertisingcampaign = self.get_object(pk, 'AdvertisingCampaign')
+        promotion = self.get_object(promotion, 'Promotion')
+        for p in advertisingcampaign.promotions.all():
+            if p == promotion:
+                advertisingcampaign.promotions.remove(p)
+        advertisingcampaign.save()
+        return redirect('advertisingcampaign', pk=pk)
+
 class AdvertisingCampaignDelete(APIView):
     def get_object(self, pk):
         try:
@@ -297,7 +319,7 @@ class AdvertisingCampaignView(APIView):
 
             advertisingcampaign.save()
 
-            return Response({'advertisingcampaign': data}, status=status.HTTP_201_CREATED)
+            return redirect('advertisingcampaign', pk=pk)
         else:
             serializer = AdvertisingCampaignSerializer(advertisingcampaign)
             return render(request, 'promoapp_campaign/advertisingcampaign/edit.html', {'form': form, 'advertisingcampaign': serializer.data})

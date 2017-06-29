@@ -12,10 +12,50 @@ from .models import User as MyUser, Admin, StoreManager, PromotionManager
 
 from forms import *
 
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import get_object_or_404, redirect, render
 from django.db.models import Max
 from django.http import Http404
+
+# *****************************************************************************
+# **********************            Login            **************************
+# *****************************************************************************
+class Login(APIView):
+    renderer_classes = [TemplateHTMLRenderer]
+    template_name = 'promoapp_user/login.html'
+
+    def get(self, request, format=None):
+        form = LoginForm()
+        return Response({'form': form})
+
+    def post(self, request, format=None):
+        form = LoginForm(request.POST)
+        if form.is_valid():
+            email = form.cleaned_data['email']
+            password = form.cleaned_data['password']
+            try:
+                u = django_User.objects.get(email=email)
+                user = authenticate(username=u.username, password=password)
+                if user is not None:
+                    login(request, user)
+                    return redirect('dashboard')
+                else:
+                    # Hacer otras cosas
+                    return Response({'password': 'invalid login!'}, status=status.HTTP_201_CREATED)
+            except django_User.DoesNotExist:
+                # Hacer otras cosas
+                raise Http404
+        else:
+            return render(request, 'promoapp_user/login.html', {'form': form})
+
+# *****************************************************************************
+# **********************           Logout            **************************
+# *****************************************************************************
+class Logout(APIView):
+    def get(self, request, format=None):
+        form = LoginForm()
+        logout(request)
+        return render(request, 'promoapp_user/login.html', {'form': form})
 
 # *****************************************************************************
 # **********************           Dashboard         **************************
@@ -37,36 +77,6 @@ class Dashboard(APIView):
         else:
             user_type = 'Django Admin'
         return Response({'type': user_type})
-
-# *****************************************************************************
-# **********************            Login            **************************
-# *****************************************************************************
-class Login(APIView):
-    renderer_classes = [TemplateHTMLRenderer]
-    template_name = 'promoapp_user/login.html'
-
-    def get(self, request, format=None):
-        form = LoginForm()
-        return Response({'form': form})
-
-    def post(self, request, format=None):
-        form = LoginForm(request.POST)
-        if form.is_valid():
-            email = form.cleaned_data['email']
-            password = form.cleaned_data['password']
-            try:
-                u = django_User.objects.get(email=email)
-                print u.username
-                user = authenticate(username=u.username, password=password)
-                if user is not None:
-                    login(request, user)
-                    return redirect('dashboard')
-                else:
-                    return Response({'password': 'invalid login!'}, status=status.HTTP_201_CREATED)
-            except django_User.DoesNotExist:
-                raise Http404
-        else:
-            return Response({'form': 'Submit data is invalid!'}, status=status.HTTP_201_CREATED)
 
 # *****************************************************************************
 # **********************         CREATE/LIST        ***************************

@@ -24,31 +24,39 @@
 {% endblock %}
 
 {% block form %}
-  <form role="form">
-    <div class="box-body">
-      <div class="form-group">
-        <label>Username</label>
+  <div class="box-body">
+    <div class="form-group">
+      <label>Username</label>
+      <div class="input-group">
+        <div class="input-group-addon">
+          <i class="fa fa-user"></i>
+        </div>
         <input type="text" class="form-control" value="{{ user.username }}" disabled>
       </div>
-      <div class="form-group">
-        <label>Email</label>
+    </div>
+    <div class="form-group">
+      <label>Email</label>
+      <div class="input-group">
+        <div class="input-group-addon">
+          <i class="fa fa-envelope"></i>
+        </div>
         <input type="email" class="form-control" value="{{ user.email }}" disabled>
       </div>
-      <div class="form-group">
-        <label>Name</label>
-        <input type="text" class="form-control" value="{{ user.first_name }}" disabled>
-      </div>
-      <div class="form-group">
-        <label>Last Name</label>
-        <input type="text" class="form-control" value="{{ user.last_name }}" disabled>
-      </div>
-      <div class="form-group">
-        <label>Type</label>
-        <input type="text" class="form-control" value="{{ user.acc_type }}" disabled>
-      </div>
     </div>
-    <!-- /.box-body -->
-  </form>
+    <div class="form-group">
+      <label>Name</label>
+      <input type="text" class="form-control" value="{{ user.first_name }}" disabled>
+    </div>
+    <div class="form-group">
+      <label>Last Name</label>
+      <input type="text" class="form-control" value="{{ user.last_name }}" disabled>
+    </div>
+    <div class="form-group">
+      <label>Type</label>
+      <input type="text" class="form-control" value="{{ user.acc_type }}" disabled>
+    </div>
+  </div>
+  <!-- /.box-body -->
 {% endblock %}
 
 {% block form_script %}

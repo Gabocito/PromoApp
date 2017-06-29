@@ -47,4 +47,4 @@ class AdvertisingCampaignEditForm(ModelForm):
         self.fields['target'].widget.attrs.update({'placeholder': 'Target', 'class': 'form-control'})
         self.fields['start_date'].widget.attrs.update({'placeholder': 'Start Date', 'class': 'form-control'})
         self.fields['end_date'].widget.attrs.update({'placeholder': 'End Date', 'class': 'form-control'})
-        self.fields['promotions'].widget.attrs.update({'class': 'selectpicker'})
+        self.fields['promotions'].widget.attrs.update({'class': 'form-control select2', 'data-placeholder': "Select a promotion", 'style': 'width: 100%;'})

@@ -3,8 +3,11 @@ from django.conf.urls import url
 from views import *
 
 urlpatterns = [
-    url(r'^dashboard/$', Dashboard.as_view(), name='dashboard'),
+    # **********************  LOGIN/LOGOUT  **********************
     url(r'^login/$', Login.as_view(), name='login'),
+    url(r'^logout/$', Logout.as_view(), name='logout'),
+    # **********************   DASHBOARD   ***********************
+    url(r'^dashboard/$', Dashboard.as_view(), name='dashboard'),
     # **********************   CREATE/LIST ***********************
     url(r'^users/$', UserListCreate.as_view(), name='users'),
     url(r'^storemanagers/add/$', StoreManagerFormCreate.as_view(), name='storemanagers-add'),

@@ -24,23 +24,21 @@
 {% endblock %}
 
 {% block form %}
-  <form role="form">
-    <div class="box-body">
-      <div class="form-group">
-        <label>Description</label>
-        <input type="text" class="form-control" value="{{ promotion.description }}" disabled>
-      </div>
-      <div class="form-group">
-        <label>Discount</label>
-        <input type="text" class="form-control" value="{{ promotion.discount }}%" disabled>
-      </div>
-      <div class="form-group">
-        <label>Products</label>
-        <input type="text" class="form-control" value="{{ promotion.products }}" disabled>
-      </div>
+  <div class="box-body">
+    <div class="form-group">
+      <label>Description</label>
+      <input type="text" class="form-control" value="{{ promotion.description }}" disabled>
     </div>
-    <!-- /.box-body -->
-  </form>
+    <div class="form-group">
+      <label>Discount</label>
+      <input type="text" class="form-control" value="{{ promotion.discount }}%" disabled>
+    </div>
+    <div class="form-group">
+      <label>Products</label>
+      <input type="text" class="form-control" value="{{ promotion.products }}" disabled>
+    </div>
+  </div>
+  <!-- /.box-body -->
 {% endblock %}
 
 {% block form_script %}

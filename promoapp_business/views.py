@@ -9,6 +9,8 @@ from models import *
 
 from forms import *
 
+from promoapp_campaign.models import AdvertisingCampaign
+
 from django.shortcuts import get_object_or_404, redirect, render
 from django.http import Http404
 
@@ -241,6 +243,28 @@ class CompanyView(APIView):
 # """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 # """                               Store                                   """
 # """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+class StoreRemoveAdvertisingCampaign(APIView):
+    def get_object(self, pk, obj):
+        if obj == 'Store':
+            try:
+                return Store.objects.get(pk=pk)
+            except Store.DoesNotExist:
+                raise Http404
+        else:
+            try:
+                return AdvertisingCampaign.objects.get(pk=pk)
+            except AdvertisingCampaign.DoesNotExist:
+                raise Http404
+
+    def post(self, request, pk, advertisingcampaign, format=None):
+        store = self.get_object(pk, 'Store')
+        advertisingcampaign = self.get_object(advertisingcampaign, 'AdvertisingCampaign')
+        for a in store.advertisingcampaigns.all():
+            if a == advertisingcampaign:
+                store.advertisingcampaigns.remove(a)
+        store.save()
+        return redirect('store', pk=pk)
+
 class StoreDelete(APIView):
     def get_object(self, pk):
         try:
@@ -301,12 +325,11 @@ class StoreView(APIView):
             store.address = data['address']
             store.email = data['email']
             for a in form.cleaned_data['advertisingcampaigns']:
-                print "AGREGANDO"
-                print store.advertisingcampaigns.add(a)
+                store.advertisingcampaigns.add(a)
 
             store.save()
 
-            return Response({'store': data}, status=status.HTTP_201_CREATED)
+            return redirect('store', pk=pk)
         else:
             serializer = StoreSerializer(store)
             return render(request, 'promoapp_business/store/edit.html', {'form': form, 'store': serializer.data})

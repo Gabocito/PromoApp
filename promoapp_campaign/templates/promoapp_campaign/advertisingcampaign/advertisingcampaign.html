@@ -24,7 +24,6 @@
 {% endblock %}
 
 {% block form %}
-  <form role="form">
     <div class="box-body">
       <div class="form-group">
         <label>Target</label>
@@ -58,7 +57,15 @@
         <ul class="list-group">
           {% if promotions %}
             {% for p in promotions %}
-              <li class="list-group-item">{{ p }}</li>
+              <li class="list-group-item">
+                {{ p }}
+                <form action="{% url 'advertisingcampaign-remove-promotion' pk=advertisingcampaign.pk promotion=p.pk %}" method="post" class="form-inline" style="float: right">
+                  {% csrf_token %}
+                  <button class="btn-link" type="submit" style="color: black">
+                    <i title="Remove" class="fa fa-close"></i>
+                  </button>
+                </form>
+              </li>
             {% endfor %}
           {% else %}
             <li class="list-group-item">This advertising campaign doesn't have promotions</li>
@@ -67,7 +74,6 @@
       </div>
     </div>
     <!-- /.box-body -->
-  </form>
 {% endblock %}
 
 {% block form_script %}

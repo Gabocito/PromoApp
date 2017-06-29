@@ -17,4 +17,5 @@ urlpatterns = [
     url(r'^stores/(?P<pk>[0-9]+)/edit/$', StoreFormEdit.as_view(), name='store-edit'),
     url(r'^stores/(?P<pk>[0-9]+)/edit/status/$', StoreEditStatus.as_view(), name='store-edit-status'),
     url(r'^stores/(?P<pk>[0-9]+)/delete/$', StoreDelete.as_view(), name='store-delete'),
+    url(r'^stores/(?P<pk>[0-9]+)/remove/advertisingcampaign/(?P<advertisingcampaign>[0-9]+)/$', StoreRemoveAdvertisingCampaign.as_view(), name='store-remove-advertisingcampaign'),
 ]

@@ -53,4 +53,4 @@ class StoreEditForm(ModelForm):
         self.fields['rif'].widget.attrs.update({'placeholder': 'Rif', 'class': 'form-control'})
         self.fields['address'].widget.attrs.update({'placeholder': 'Address', 'class': 'form-control'})
         self.fields['email'].widget.attrs.update({'placeholder': 'Email', 'class': 'form-control'})
-        self.fields['advertisingcampaigns'].widget.attrs.update({'class': 'selectpicker'})
+        self.fields['advertisingcampaigns'].widget.attrs.update({'class': 'form-control select2', 'data-placeholder': "Select an advertising campaign", 'style': 'width: 100%;'})
