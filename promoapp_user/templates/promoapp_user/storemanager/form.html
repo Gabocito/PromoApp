@@ -20,24 +20,6 @@
   Add
 {% endblock %}
 
-{% block form_errors %}
-  {% if sm_form.errors or user_form.errors%}
-    <div class="alert alert-error">
-      <button type="button" class="close" data-dismiss="alert">×</button>
-      {% for field in sm_form %} 
-        {% if field.errors %}
-        <li>{{ field.label }}: {{ field.errors|striptags }}</li>
-        {% endif %}
-      {% endfor %}
-      {% for field in user_form %} 
-        {% if field.errors %}
-        <li>{{ field.label }}: {{ field.errors|striptags }}</li>
-        {% endif %}
-      {% endfor %}
-    </div>
-  {% endif %}
-{% endblock %}
-
 {% block form %}
   <form role="form" action="{% url 'storemanagers' %}" method="post">
     {% csrf_token %}
@@ -45,7 +27,6 @@
       {{ user_form.non_field_errors }}
       {{ sm_form.non_field_errors }}
       <div class="form-group">
-        {{ user_form.username.errors }}
         <label for="{{ user_form.username.id_for_label }}">Username</label>
         <div class="input-group">
           <div class="input-group-addon">
@@ -53,9 +34,9 @@
           </div>
           {{ user_form.username }}
         </div>
+        {{ user_form.username.errors }}
       </div>
       <div class="form-group">
-        {{ sm_form.email.errors }}
         <label for="{{ sm_form.email.id_for_label }}">Email</label>
         <div class="input-group">
           <div class="input-group-addon">
@@ -63,9 +44,9 @@
           </div>
           {{ sm_form.email }}
         </div>
+        {{ sm_form.email.errors }}
       </div>
       <div class="form-group">
-        {{ user_form.password.errors }}
         <label for="{{ user_form.password.id_for_label }}">Password</label>
         <div class="input-group">
           <div class="input-group-addon">
@@ -73,6 +54,7 @@
           </div>
           {{ user_form.password }}
         </div>
+        {{ user_form.password.errors }}
       </div>
     </div>
     <!-- /.box-body -->

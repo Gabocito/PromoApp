@@ -2,7 +2,8 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.renderers import TemplateHTMLRenderer
-from rest_framework.renderers import JSONRenderer
+
+from rest_framework import permissions, generics
 
 from serializers import *
 
@@ -23,6 +24,7 @@ from django.http import Http404
 class Login(APIView):
     renderer_classes = [TemplateHTMLRenderer]
     template_name = 'promoapp_user/login.html'
+    permission_classes = (permissions.AllowAny,)
 
     def get(self, request, format=None):
         form = LoginForm()
@@ -33,18 +35,14 @@ class Login(APIView):
         if form.is_valid():
             email = form.cleaned_data['email']
             password = form.cleaned_data['password']
-            try:
-                u = django_User.objects.get(email=email)
-                user = authenticate(username=u.username, password=password)
-                if user is not None:
-                    login(request, user)
-                    return redirect('dashboard')
-                else:
-                    # Hacer otras cosas
-                    return Response({'password': 'invalid login!'}, status=status.HTTP_201_CREATED)
-            except django_User.DoesNotExist:
-                # Hacer otras cosas
-                raise Http404
+            u = django_User.objects.get(email=email)
+            user = authenticate(username=u.username, password=password)
+            if user is not None:
+                login(request, user)
+                return redirect('dashboard')
+            else:
+                return render(request, 'promoapp_user/login.html', {'form': form, 'error': "Your password is incorrect!"})
+
         else:
             return render(request, 'promoapp_user/login.html', {'form': form})
 
@@ -52,10 +50,9 @@ class Login(APIView):
 # **********************           Logout            **************************
 # *****************************************************************************
 class Logout(APIView):
-    def get(self, request, format=None):
-        form = LoginForm()
+    def post(self, request, format=None):
         logout(request)
-        return render(request, 'promoapp_user/login.html', {'form': form})
+        return redirect('login')
 
 # *****************************************************************************
 # **********************           Dashboard         **************************

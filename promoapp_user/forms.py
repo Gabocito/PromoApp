@@ -3,6 +3,7 @@
 
 from django import forms
 from django.forms import ModelForm
+from django.contrib.auth import authenticate
 from django.contrib.auth.models import User as django_User
 from .models import User as MyUser, Admin, StoreManager, PromotionManager
 
@@ -15,6 +16,14 @@ class LoginForm(ModelForm):
         super(LoginForm, self).__init__(*args, **kwargs)
         self.fields['email'].widget.attrs.update({'placeholder': 'Email', 'class': 'form-control'})
         self.fields['password'].widget.attrs.update({'placeholder': 'Password', 'class': 'form-control'})
+
+    def clean_email(self):
+        email = self.cleaned_data.get('email')
+        
+        if not django_User.objects.filter(email=email).exists():
+            raise forms.ValidationError("Your email address is not registered!")
+
+        return email
 
 class DjangoUserForm(ModelForm):
     class Meta:
@@ -58,7 +67,7 @@ class StoreManagerForm(ModelForm):
         email = self.cleaned_data.get('email')
 
         if StoreManager.objects.filter(email=email).exists():
-            raise forms.ValidationError("This email already exists!")
+            raise forms.ValidationError("This email address is already registered!")
 
         return email
 
@@ -75,6 +84,6 @@ class PromotionManagerForm(ModelForm):
         email = self.cleaned_data.get('email')
 
         if PromotionManager.objects.filter(email=email).exists():
-            raise forms.ValidationError("This email already exists!")
+            raise forms.ValidationError("This email address is already registered!")
 
         return email

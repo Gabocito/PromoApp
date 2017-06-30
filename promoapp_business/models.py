@@ -6,7 +6,7 @@ class Company(models.Model):
     name = models.CharField(max_length=32)
     rif = models.CharField(max_length=32)
     commercial_sector = models.CharField(max_length=32)
-    address = models.CharField(max_length=200)
+    address = models.TextField(max_length=200)
     email = models.EmailField(max_length=70,blank=True)
     is_active = models.BooleanField(default=True)
 
@@ -16,7 +16,7 @@ class Company(models.Model):
 class Store(models.Model):
     name = models.CharField(max_length=32)
     rif = models.CharField(max_length=32)
-    address = models.CharField(max_length=200)
+    address = models.TextField(max_length=200)
     email = models.EmailField(max_length=70,blank=True)
     is_active = models.BooleanField(default=True)
     advertisingcampaigns = models.ManyToManyField('promoapp_campaign.AdvertisingCampaign')

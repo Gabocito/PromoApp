@@ -116,7 +116,7 @@
                           <a href="#" class="btn btn-default btn-flat">Profile</a>
                         </div>
                         <div class="pull-right">
-                          <a href="{% url 'logout' %}" class="btn btn-default btn-flat">Sign out</a>
+                          <form action="{% url 'logout' %}" method="post" class="form-inline">{% csrf_token %}<button class="btn btn-default btn-flat" type="submit">Sign out</button></form>
                         </div>
                       </li>
                     </ul>
