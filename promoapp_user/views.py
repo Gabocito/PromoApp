@@ -1,11 +1,11 @@
-from rest_framework import status
+from rest_framework import status, permissions
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.renderers import TemplateHTMLRenderer
 
-from rest_framework import permissions, generics
-
 from serializers import *
+
+from permissions import *
 
 from django.contrib.auth.models import User as django_User
 
@@ -13,10 +13,25 @@ from .models import User as MyUser, Admin, StoreManager, PromotionManager
 
 from forms import *
 
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
 from django.shortcuts import get_object_or_404, redirect, render
 from django.db.models import Max
 from django.http import Http404
+
+def get_user_data(request):
+    """ Get the type of user """
+    if StoreManager.objects.filter(user_id=request.user.pk):
+        user_type = 'Store Manager'
+        current_user = StoreManager.objects.filter(user_id=request.user.pk)[0]
+    elif PromotionManager.objects.filter(user_id=request.user.pk):
+        user_type = 'Promotion Manager'
+        current_user = PromotionManager.objects.filter(user_id=request.user.pk)[0]
+    elif Admin.objects.filter(user_id=request.user.pk):
+        user_type = 'Admin'
+        current_user = Admin.objects.filter(user_id=request.user.pk)[0]
+    else:
+        return (None, None)
+    return (user_type, current_user)
 
 # *****************************************************************************
 # **********************            Login            **************************
@@ -36,13 +51,16 @@ class Login(APIView):
             email = form.cleaned_data['email']
             password = form.cleaned_data['password']
             u = django_User.objects.get(email=email)
+
+            if MyUser.objects.filter(user_id=u.pk):
+                return render(request, 'promoapp_user/login.html', {'form': form, 'error': "Your email address is not registered!"})
+
             user = authenticate(username=u.username, password=password)
             if user is not None:
                 login(request, user)
                 return redirect('dashboard')
             else:
                 return render(request, 'promoapp_user/login.html', {'form': form, 'error': "Your password is incorrect!"})
-
         else:
             return render(request, 'promoapp_user/login.html', {'form': form})
 
@@ -55,25 +73,26 @@ class Logout(APIView):
         return redirect('login')
 
 # *****************************************************************************
+# **********************           Profile           **************************
+# *****************************************************************************
+class Profile(APIView):
+    def post(self, request, format=None):
+        (user_type, current_user) = get_user_data(request)
+        if user_type == 'Store Manager':
+            return redirect('storemanager-edit', pk=current_user.pk)
+        elif user_type == 'Promotion Manager':
+            return redirect('promotionmanager-edit', pk=current_user.pk)
+
+# *****************************************************************************
 # **********************           Dashboard         **************************
 # *****************************************************************************
 class Dashboard(APIView):
     renderer_classes = [TemplateHTMLRenderer]
     template_name = 'promoapp_user/dashboard.html'
+    permission_classes = (permissions.IsAuthenticated,)
 
     def get(self, request):
-        """ Get the type of user that logged in """
-        if StoreManager.objects.filter(user_id=request.user.pk):
-            user_type = 'SM'    
-        elif PromotionManager.objects.filter(user_id=request.user.pk):
-            user_type = 'PM'
-        elif Admin.objects.filter(user_id=request.user.pk):
-            user_type = 'Admin'
-        elif User.objects.filter(user_id=request.user.pk):
-            user_type = 'User'
-        else:
-            user_type = 'Django Admin'
-        return Response({'type': user_type})
+        return Response({})
 
 # *****************************************************************************
 # **********************         CREATE/LIST        ***************************
@@ -85,6 +104,7 @@ class Dashboard(APIView):
 class UserListCreate(APIView):
     renderer_classes = [TemplateHTMLRenderer]
     template_name = 'promoapp_user/user/users.html'
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly,isAdmin)
 
     """ List all users """
     def get(self, request, format=None):
@@ -120,6 +140,7 @@ class UserListCreate(APIView):
 class StoreManagerFormCreate(APIView):
     renderer_classes = [TemplateHTMLRenderer]
     template_name = 'promoapp_user/storemanager/form.html'
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly,isAdmin)
 
     def get(self, request, format=None):
         sm_form = PromotionManagerForm()
@@ -129,6 +150,7 @@ class StoreManagerFormCreate(APIView):
 class StoreManagerListCreate(APIView):
     renderer_classes = [TemplateHTMLRenderer]
     template_name = 'promoapp_user/storemanager/storemanagers.html'
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly,isAdmin)
     
     """ List all store managers """
     def get(self, request, format=None):
@@ -167,6 +189,7 @@ class StoreManagerListCreate(APIView):
 class PromotionManagerFormCreate(APIView):
     renderer_classes = [TemplateHTMLRenderer]
     template_name = 'promoapp_user/promotionmanager/form.html'
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly,isAdmin)
 
     def get(self, request, format=None):
         pm_form = PromotionManagerForm()
@@ -176,6 +199,7 @@ class PromotionManagerFormCreate(APIView):
 class PromotionManagerListCreate(APIView):
     renderer_classes = [TemplateHTMLRenderer]
     template_name = 'promoapp_user/promotionmanager/promotionmanagers.html'
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly,isAdmin)
 
     """ List all promotion managers """
     def get(self, request, format=None):
@@ -212,6 +236,8 @@ class PromotionManagerListCreate(APIView):
 # """                             Admin                                     """
 # """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 class AdminListCreate(APIView):
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly,isAdmin)
+
     """ List all admins """
     def get(self, request, format=None):
         admins = Admin.objects.all()
@@ -228,10 +254,13 @@ class AdminListCreate(APIView):
 class UserView(APIView):
     renderer_classes = [TemplateHTMLRenderer]
     template_name = 'promoapp_user/user/user.html'
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly,isCurrentUserOrAdmin)
 
     def get_object(self, pk):
         try:
-            return MyUser.objects.get(pk=pk)
+            obj = MyUser.objects.get(pk=pk)
+            self.check_object_permissions(self.request, obj)
+            return obj
         except MyUser.DoesNotExist:
             raise Http404
 
@@ -264,9 +293,13 @@ class UserView(APIView):
 # """                          Store Manager                                """
 # """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 class StoreManagerDelete(APIView):
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly,isCurrentUserOrAdmin)
+
     def get_object(self, pk):
         try:
-            return StoreManager.objects.get(pk=pk)
+            obj = StoreManager.objects.get(pk=pk)
+            self.check_object_permissions(self.request, obj)
+            return obj
         except StoreManager.DoesNotExist:
             raise Http404
 
@@ -278,9 +311,13 @@ class StoreManagerDelete(APIView):
         return redirect('storemanagers')
 
 class StoreManagerEditStatus(APIView):
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly,isCurrentUserOrAdmin)
+
     def get_object(self, pk):
         try:
-            return StoreManager.objects.get(pk=pk)
+            obj = StoreManager.objects.get(pk=pk)
+            self.check_object_permissions(self.request, obj)
+            return obj
         except StoreManager.DoesNotExist:
             raise Http404
 
@@ -300,10 +337,13 @@ class StoreManagerEditStatus(APIView):
 class StoreManagerFormEdit(APIView):
     renderer_classes = [TemplateHTMLRenderer]
     template_name = 'promoapp_user/storemanager/edit.html'
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly,isCurrentUserOrAdmin)
 
     def get_object(self, pk):
         try:
-            return StoreManager.objects.get(pk=pk)
+            obj = StoreManager.objects.get(pk=pk)
+            self.check_object_permissions(self.request, obj)
+            return obj
         except StoreManager.DoesNotExist:
             raise Http404
 
@@ -324,10 +364,13 @@ class StoreManagerFormEdit(APIView):
 class StoreManagerView(APIView):
     renderer_classes = [TemplateHTMLRenderer]
     template_name = 'promoapp_user/storemanager/storemanager.html'
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly,isCurrentUserOrAdmin)
 
     def get_object(self, pk):
         try:
-            return StoreManager.objects.get(pk=pk)
+            obj = StoreManager.objects.get(pk=pk)
+            self.check_object_permissions(self.request, obj)
+            return obj
         except StoreManager.DoesNotExist:
             raise Http404
 
@@ -355,20 +398,16 @@ class StoreManagerView(APIView):
                 }
             }
 
-            storemanager.user.set_password(data['user']['password'])
+            if data['user']['password'] != '':
+                storemanager.user.set_password(data['user']['password'])
+                if request.user == storemanager.user:
+                    update_session_auth_hash(request, storemanager.user)
+
             storemanager.user.first_name = data['user']['first_name']
             storemanager.user.last_name = data['user']['last_name']
             storemanager.user.save()
 
-            data = {
-                'username': storemanager.user.username,
-                'email': storemanager.email,
-                'first_name': storemanager.user.first_name,
-                'last_name': storemanager.user.last_name,
-                'is_active': 'Active' if storemanager.is_active else 'Inactive'
-            }
-
-            return Response({'user': data}, status=status.HTTP_201_CREATED)
+            return redirect('storemanager', pk=pk)
         else:
             serializer = StoreManagerSerializer(storemanager)
             data = {
@@ -400,9 +439,13 @@ class StoreManagerView(APIView):
 # """                         Promotion Manager                             """
 # """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 class PromotionManagerDelete(APIView):
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly,isCurrentUserOrAdmin)
+
     def get_object(self, pk):
         try:
-            return PromotionManager.objects.get(pk=pk)
+            obj = PromotionManager.objects.get(pk=pk)
+            self.check_object_permissions(self.request, obj)
+            return obj
         except PromotionManager.DoesNotExist:
             raise Http404
 
@@ -414,6 +457,8 @@ class PromotionManagerDelete(APIView):
         return redirect('promotionmanagers')
 
 class PromotionManagerEditStatus(APIView):
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly,isCurrentUserOrAdmin)
+
     def get_object(self, pk):
         try:
             return PromotionManager.objects.get(pk=pk)
@@ -436,10 +481,13 @@ class PromotionManagerEditStatus(APIView):
 class PromotionManagerFormEdit(APIView):
     renderer_classes = [TemplateHTMLRenderer]
     template_name = 'promoapp_user/promotionmanager/edit.html'
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly,isCurrentUserOrAdmin)
 
     def get_object(self, pk):
         try:
-            return PromotionManager.objects.get(pk=pk)
+            obj = PromotionManager.objects.get(pk=pk)
+            self.check_object_permissions(self.request, obj)
+            return obj
         except PromotionManager.DoesNotExist:
             raise Http404
 
@@ -460,10 +508,13 @@ class PromotionManagerFormEdit(APIView):
 class PromotionManagerView(APIView):
     renderer_classes = [TemplateHTMLRenderer]
     template_name = 'promoapp_user/promotionmanager/promotionmanager.html'
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly,isCurrentUserOrAdmin)
 
     def get_object(self, pk):
         try:
-            return PromotionManager.objects.get(pk=pk)
+            obj = PromotionManager.objects.get(pk=pk)
+            self.check_object_permissions(self.request, obj)
+            return obj
         except PromotionManager.DoesNotExist:
             raise Http404
 
@@ -483,6 +534,7 @@ class PromotionManagerView(APIView):
         promotionmanager = self.get_object(pk)
         form = DjangoUserEditForm(request.POST)
         if form.is_valid():
+            print form.cleaned_data
             data = {
                 'user': {
                     'first_name': form.cleaned_data['first_name'],
@@ -491,20 +543,15 @@ class PromotionManagerView(APIView):
                 }
             }
 
-            promotionmanager.user.set_password(data['user']['password'])
+            if data['user']['password'] != '':
+                promotionmanager.user.set_password(data['user']['password'])
+                if request.user == promotionmanager.user:
+                    update_session_auth_hash(request, promotionmanager.user)
             promotionmanager.user.first_name = data['user']['first_name']
             promotionmanager.user.last_name = data['user']['last_name']
             promotionmanager.user.save()
 
-            data = {
-                'username': promotionmanager.user.username,
-                'email': promotionmanager.email,
-                'first_name': promotionmanager.user.first_name,
-                'last_name': promotionmanager.user.last_name,
-                'is_active': 'Active' if promotionmanager.is_active else 'Inactive'
-            }
-
-            return Response({'user': data}, status=status.HTTP_201_CREATED)
+            return redirect('promotionmanager', pk=pk)
         else:
             serializer = PromotionManagerSerializer(promotionmanager)
             data = {
@@ -536,9 +583,13 @@ class PromotionManagerView(APIView):
 # """                             Admin                                     """
 # """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""        
 class AdminView(APIView):
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly,isCurrentUserOrAdmin)
+
     def get_object(self, pk):
         try:
-            return Admin.objects.get(pk=pk)
+            obj = Admin.objects.get(pk=pk)
+            self.check_object_permissions(self.request, obj)
+            return obj
         except Admin.DoesNotExist:
             raise Http404
 

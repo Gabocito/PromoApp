@@ -1,9 +1,11 @@
-from rest_framework import status
+from rest_framework import status, permissions
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.renderers import TemplateHTMLRenderer
 
 from serializers import *
+
+from permissions import *
 
 from models import *
 
@@ -22,6 +24,7 @@ from django.http import Http404
 class PromotionFormCreate(APIView):
     renderer_classes = [TemplateHTMLRenderer]
     template_name = 'promoapp_campaign/promotion/form.html'
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly,isAdminOrPromotionManager)
 
     def get(self, request, format=None):
         form = PromotionForm()
@@ -30,6 +33,7 @@ class PromotionFormCreate(APIView):
 class PromotionListCreate(APIView):
     renderer_classes = [TemplateHTMLRenderer]
     template_name = 'promoapp_campaign/promotion/promotions.html'
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly,isAdminOrPromotionManager)
 
     """ List all promotions """
     def get(self, request, format=None):
@@ -68,6 +72,7 @@ class PromotionListCreate(APIView):
 class AdvertisingCampaignFormCreate(APIView):
     renderer_classes = [TemplateHTMLRenderer]
     template_name = 'promoapp_campaign/advertisingcampaign/form.html'
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly,isAdminOrPromotionManager)
 
     def get(self, request, format=None):
         form = AdvertisingCampaignForm()
@@ -76,6 +81,7 @@ class AdvertisingCampaignFormCreate(APIView):
 class AdvertisingCampaignListCreate(APIView):
     renderer_classes = [TemplateHTMLRenderer]
     template_name = 'promoapp_campaign/advertisingcampaign/advertisingcampaigns.html'
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly,isAdminOrPromotionManager)
 
     """ List all advertising campaigns """
     def get(self, request, format=None):
@@ -114,6 +120,8 @@ class AdvertisingCampaignListCreate(APIView):
 # """                             Promotion                                 """
 # """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 class PromotionDelete(APIView):
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly,isAdminOrPromotionManager)
+
     def get_object(self, pk):
         try:
             return Promotion.objects.get(pk=pk)
@@ -126,6 +134,8 @@ class PromotionDelete(APIView):
         return redirect('promotions')
 
 class PromotionEditStatus(APIView):
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly,isAdminOrPromotionManager)
+
     def get_object(self, pk):
         try:
             return Promotion.objects.get(pk=pk)
@@ -148,6 +158,7 @@ class PromotionEditStatus(APIView):
 class PromotionFormEdit(APIView):
     renderer_classes = [TemplateHTMLRenderer]
     template_name = 'promoapp_campaign/promotion/edit.html'
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly,isAdminOrPromotionManager)
 
     def get_object(self, pk):
         try:
@@ -164,6 +175,7 @@ class PromotionFormEdit(APIView):
 class PromotionView(APIView):
     renderer_classes = [TemplateHTMLRenderer]
     template_name = 'promoapp_campaign/promotion/promotion.html'
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly,isAdminOrPromotionManager)
 
     def get_object(self, pk):
         try:
@@ -215,6 +227,8 @@ class PromotionView(APIView):
 # """                       Advertising Campaign                            """
 # """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 class AdvertisingCampaignRemovePromotion(APIView):
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly,isAdminOrPromotionManager)
+
     def get_object(self, pk, obj):
         if obj == 'AdvertisingCampaign':
             try:
@@ -237,6 +251,8 @@ class AdvertisingCampaignRemovePromotion(APIView):
         return redirect('advertisingcampaign', pk=pk)
 
 class AdvertisingCampaignDelete(APIView):
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly,isAdminOrPromotionManager)
+
     def get_object(self, pk):
         try:
             return AdvertisingCampaign.objects.get(pk=pk)
@@ -249,6 +265,8 @@ class AdvertisingCampaignDelete(APIView):
         return redirect('advertisingcampaigns')
 
 class AdvertisingCampaignEditStatus(APIView):
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly,isAdminOrPromotionManager)
+
     def get_object(self, pk):
         try:
             return AdvertisingCampaign.objects.get(pk=pk)
@@ -271,6 +289,7 @@ class AdvertisingCampaignEditStatus(APIView):
 class AdvertisingCampaignFormEdit(APIView):
     renderer_classes = [TemplateHTMLRenderer]
     template_name = 'promoapp_campaign/advertisingcampaign/edit.html'
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly,isAdminOrPromotionManager)
 
     def get_object(self, pk):
         try:
@@ -287,6 +306,7 @@ class AdvertisingCampaignFormEdit(APIView):
 class AdvertisingCampaignView(APIView):
     renderer_classes = [TemplateHTMLRenderer]
     template_name = 'promoapp_campaign/advertisingcampaign/advertisingcampaign.html'
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly,isAdminOrPromotionManager)
 
     def get_object(self, pk):
         try:

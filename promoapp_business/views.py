@@ -1,9 +1,11 @@
-from rest_framework import status
+from rest_framework import status, permissions
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.renderers import TemplateHTMLRenderer
 
 from serializers import *
+
+from permissions import *
 
 from models import *
 
@@ -24,6 +26,7 @@ from django.http import Http404
 class CompanyFormCreate(APIView):
     renderer_classes = [TemplateHTMLRenderer]
     template_name = 'promoapp_business/company/form.html'
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly,isAdminOrStoreManager)
 
     def get(self, request, format=None):
         form = CompanyForm()
@@ -32,6 +35,7 @@ class CompanyFormCreate(APIView):
 class CompanyListCreate(APIView):
     renderer_classes = [TemplateHTMLRenderer]
     template_name = 'promoapp_business/company/companies.html'
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly,isAdminOrStoreManager)
 
     """ List all companies """
     def get(self, request, format=None):
@@ -69,29 +73,10 @@ class CompanyListCreate(APIView):
 # """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 # """                               Store                                   """
 # """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-class StoreEditStatus(APIView):
-    def get_object(self, pk):
-        try:
-            return Store.objects.get(pk=pk)
-        except Store.DoesNotExist:
-            raise Http404
-
-    def post(self, request, pk, format=None):
-        store = self.get_object(pk)
-
-        try:
-            is_active = True if request.POST['is_active'] == 'True' else 'False'
-            store.is_active = is_active
-            store.save()
-        except:
-            return Response({'is_active': 'This field is required.'}, 
-                                status=status.HTTP_400_BAD_REQUEST)
-
-        return redirect('stores')
-
 class StoreFormCreate(APIView):
     renderer_classes = [TemplateHTMLRenderer]
     template_name = 'promoapp_business/store/form.html'
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly,isAdminOrStoreManager)
 
     def get(self, request, format=None):
         form = StoreForm()
@@ -100,6 +85,7 @@ class StoreFormCreate(APIView):
 class StoreListCreate(APIView):
     renderer_classes = [TemplateHTMLRenderer]
     template_name = 'promoapp_business/store/stores.html'
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly,isAdminOrStoreManager)
 
     """ List all stores """
     def get(self, request, format=None):
@@ -141,6 +127,8 @@ class StoreListCreate(APIView):
 # """                              Company                                  """
 # """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 class CompanyDelete(APIView):
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly,isAdminOrStoreManager)
+
     def get_object(self, pk):
         try:
             return Company.objects.get(pk=pk)
@@ -153,6 +141,8 @@ class CompanyDelete(APIView):
         return redirect('companies')
 
 class CompanyEditStatus(APIView):
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly,isAdminOrStoreManager)
+
     def get_object(self, pk):
         try:
             return Company.objects.get(pk=pk)
@@ -175,6 +165,7 @@ class CompanyEditStatus(APIView):
 class CompanyFormEdit(APIView):
     renderer_classes = [TemplateHTMLRenderer]
     template_name = 'promoapp_business/company/edit.html'
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly,isAdminOrStoreManager)
 
     def get_object(self, pk):
         try:
@@ -191,6 +182,7 @@ class CompanyFormEdit(APIView):
 class CompanyView(APIView):
     renderer_classes = [TemplateHTMLRenderer]
     template_name = 'promoapp_business/company/company.html'
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly,isAdminOrStoreManager)
 
     def get_object(self, pk):
         try:
@@ -244,6 +236,8 @@ class CompanyView(APIView):
 # """                               Store                                   """
 # """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 class StoreRemoveAdvertisingCampaign(APIView):
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly,isAdminOrStoreManager)
+
     def get_object(self, pk, obj):
         if obj == 'Store':
             try:
@@ -266,6 +260,8 @@ class StoreRemoveAdvertisingCampaign(APIView):
         return redirect('store', pk=pk)
 
 class StoreDelete(APIView):
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly,isAdminOrStoreManager)
+
     def get_object(self, pk):
         try:
             return Store.objects.get(pk=pk)
@@ -277,9 +273,32 @@ class StoreDelete(APIView):
         store.delete()
         return redirect('stores')
 
+class StoreEditStatus(APIView):
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly,isAdminOrStoreManager)
+
+    def get_object(self, pk):
+        try:
+            return Store.objects.get(pk=pk)
+        except Store.DoesNotExist:
+            raise Http404
+
+    def post(self, request, pk, format=None):
+        store = self.get_object(pk)
+
+        try:
+            is_active = True if request.POST['is_active'] == 'True' else 'False'
+            store.is_active = is_active
+            store.save()
+        except:
+            return Response({'is_active': 'This field is required.'}, 
+                                status=status.HTTP_400_BAD_REQUEST)
+
+        return redirect('stores')
+
 class StoreFormEdit(APIView):
     renderer_classes = [TemplateHTMLRenderer]
     template_name = 'promoapp_business/store/edit.html'
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly,isAdminOrStoreManager)
 
     def get_object(self, pk):
         try:
@@ -296,6 +315,7 @@ class StoreFormEdit(APIView):
 class StoreView(APIView):
     renderer_classes = [TemplateHTMLRenderer]
     template_name = 'promoapp_business/store/store.html'
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly,isAdminOrStoreManager)
 
     def get_object(self, pk):
         try:
