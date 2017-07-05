@@ -9,3 +9,12 @@ class isAdminOrStoreManager(permissions.BasePermission):
         if Admin.objects.filter(user_id=request.user.pk) or StoreManager.objects.filter(user_id=request.user.pk):
             return True
         return False
+
+class isAdminOrOwner(permissions.BasePermission):
+    """
+    Custom Permission to only allow Admins or Promotion Managers to access the Promotions section.
+    """
+    def has_object_permission(self, request, view, obj):
+        if Admin.objects.filter(user_id=request.user.pk) or StoreManager.objects.filter(user_id=request.user.pk)[0] == obj.owner:
+            return True
+        return False

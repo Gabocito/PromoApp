@@ -20,6 +20,7 @@ class Store(models.Model):
     email = models.EmailField(max_length=70,blank=True)
     is_active = models.BooleanField(default=True)
     advertisingcampaigns = models.ManyToManyField('promoapp_campaign.AdvertisingCampaign')
+    owner = models.ForeignKey('promoapp_user.PromotionManager', null=True)
 
     def __unicode__(self):
         return self.name + ' rif:' + self.rif

@@ -12,6 +12,7 @@ from models import *
 from forms import *
 
 from promoapp_campaign.models import AdvertisingCampaign
+from promoapp_user.models import StoreManager
 
 from django.shortcuts import get_object_or_404, redirect, render
 from django.http import Http404
@@ -61,6 +62,7 @@ class CompanyListCreate(APIView):
             c.commercial_sector = data['commercial_sector']
             c.address = data['address']
             c.email = data['email']
+            c.owner = StoreManager.objects.filter(user_id=request.user.pk)[0]
             c.save()
 
             companies = Company.objects.all()
@@ -165,7 +167,7 @@ class CompanyEditStatus(APIView):
 class CompanyFormEdit(APIView):
     renderer_classes = [TemplateHTMLRenderer]
     template_name = 'promoapp_business/company/edit.html'
-    permission_classes = (permissions.IsAuthenticatedOrReadOnly,isAdminOrStoreManager)
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly,isAdminOrOwner)
 
     def get_object(self, pk):
         try:
@@ -182,7 +184,7 @@ class CompanyFormEdit(APIView):
 class CompanyView(APIView):
     renderer_classes = [TemplateHTMLRenderer]
     template_name = 'promoapp_business/company/company.html'
-    permission_classes = (permissions.IsAuthenticatedOrReadOnly,isAdminOrStoreManager)
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly,isAdminOrOwner)
 
     def get_object(self, pk):
         try:
@@ -236,7 +238,7 @@ class CompanyView(APIView):
 # """                               Store                                   """
 # """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 class StoreRemoveAdvertisingCampaign(APIView):
-    permission_classes = (permissions.IsAuthenticatedOrReadOnly,isAdminOrStoreManager)
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly,isAdminOrOwner)
 
     def get_object(self, pk, obj):
         if obj == 'Store':
@@ -260,7 +262,7 @@ class StoreRemoveAdvertisingCampaign(APIView):
         return redirect('store', pk=pk)
 
 class StoreDelete(APIView):
-    permission_classes = (permissions.IsAuthenticatedOrReadOnly,isAdminOrStoreManager)
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly,isAdminOrOwner)
 
     def get_object(self, pk):
         try:
@@ -274,7 +276,7 @@ class StoreDelete(APIView):
         return redirect('stores')
 
 class StoreEditStatus(APIView):
-    permission_classes = (permissions.IsAuthenticatedOrReadOnly,isAdminOrStoreManager)
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly,isAdminOrOwner)
 
     def get_object(self, pk):
         try:
@@ -298,7 +300,7 @@ class StoreEditStatus(APIView):
 class StoreFormEdit(APIView):
     renderer_classes = [TemplateHTMLRenderer]
     template_name = 'promoapp_business/store/edit.html'
-    permission_classes = (permissions.IsAuthenticatedOrReadOnly,isAdminOrStoreManager)
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly,isAdminOrOwner)
 
     def get_object(self, pk):
         try:
@@ -315,7 +317,7 @@ class StoreFormEdit(APIView):
 class StoreView(APIView):
     renderer_classes = [TemplateHTMLRenderer]
     template_name = 'promoapp_business/store/store.html'
-    permission_classes = (permissions.IsAuthenticatedOrReadOnly,isAdminOrStoreManager)
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly,isAdminOrOwner)
 
     def get_object(self, pk):
         try:

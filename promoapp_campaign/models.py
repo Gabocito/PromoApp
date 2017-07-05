@@ -12,6 +12,7 @@ class Promotion(models.Model):
     )
     products = models.CharField(max_length=200,default='')
     is_active = models.BooleanField(default=True)
+    owner = models.ForeignKey('promoapp_user.PromotionManager', null=True)
 
     def __unicode__(self):
         return self.description
@@ -22,6 +23,7 @@ class AdvertisingCampaign(models.Model):
     end_date = models.DateField()
     is_active = models.BooleanField(default=True)
     promotions = models.ManyToManyField(Promotion)
+    owner = models.ForeignKey('promoapp_user.PromotionManager', null=True)
 
     def __unicode__(self):
         return self.target
