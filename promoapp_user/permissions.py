@@ -18,3 +18,12 @@ class isCurrentUserOrAdmin(permissions.BasePermission):
         if (Admin.objects.filter(user_id=request.user.pk) or request.user == obj.user):
             return True
         return False
+
+class isCurrentUserAndAdmin(permissions.BasePermission):
+    """
+    Custom Permission to only allow Users to manage their own user data.
+    """
+    def has_object_permission(self, request, view, obj):
+        if (Admin.objects.filter(user_id=request.user.pk) and request.user == obj.user):
+            return True
+        return False

@@ -82,6 +82,8 @@ class Profile(APIView):
             return redirect('storemanager-edit', pk=current_user.pk)
         elif user_type == 'Promotion Manager':
             return redirect('promotionmanager-edit', pk=current_user.pk)
+        elif user_type == 'Admin':
+            return redirect('admin-edit', pk=current_user.pk)
 
 # *****************************************************************************
 # **********************           Dashboard         **************************
@@ -162,19 +164,12 @@ class StoreManagerListCreate(APIView):
         sm_form = StoreManagerForm({'email': request.POST['email']})
         user_form = DjangoUserForm({'username': request.POST['username'], 'password': request.POST['password']})
         if sm_form.is_valid() and user_form.is_valid():
-            data = {
-                'user': {
-                    'username': user_form.cleaned_data['username'],
-                    'password': user_form.cleaned_data['password']
-                },
-                'email': sm_form.cleaned_data['email']
-            }
-            u = django_User.objects.create(username=data['user']['username'])
-            u.set_password(data['user']['password'])
-            u.email = data['email']
+            u = django_User.objects.create(username=user_form.cleaned_data['username'])
+            u.set_password(user_form.cleaned_data['password'])
+            u.email = sm_form.cleaned_data['email']
             u.save()
 
-            s = StoreManager.objects.create(user=u, email=data['email'])
+            s = StoreManager.objects.create(user=u, email=sm_form.cleaned_data['email'])
 
             storemanagers = StoreManager.objects.all()
             serializer = StoreManagerSerializer(storemanagers, many=True)
@@ -211,19 +206,12 @@ class PromotionManagerListCreate(APIView):
         pm_form = PromotionManagerForm({'email': request.POST['email']})
         user_form = DjangoUserForm({'username': request.POST['username'], 'password': request.POST['password']})
         if pm_form.is_valid() and user_form.is_valid():
-            data = {
-                'user': {
-                    'username': user_form.cleaned_data['username'],
-                    'password': user_form.cleaned_data['password']
-                },
-                'email': pm_form.cleaned_data['email']
-            }
-            u = django_User.objects.create(username=data['user']['username'])
-            u.set_password(data['user']['password'])
-            u.email = data['email']
+            u = django_User.objects.create(username=user_form.cleaned_data['username'])
+            u.set_password(user_form.cleaned_data['password'])
+            u.email = sm_form.cleaned_data['email']
             u.save()
 
-            s = PromotionManager.objects.create(user=u, email=data['email'])
+            p = PromotionManager.objects.create(user=u, email=sm_form.cleaned_data['email'])
 
             promotionmanagers = PromotionManager.objects.all()
             serializer = PromotionManagerSerializer(promotionmanagers, many=True)
@@ -358,8 +346,9 @@ class StoreManagerFormEdit(APIView):
             'is_active': 'Active' if serializer.data['is_active'] else 'Inactive',
             'pk': pk
         }
-        form = DjangoUserEditForm()
-        return Response({'form': form, 'user': data})
+        user_form = DjangoUserEditForm()
+        sm_form = StoreManagerEditForm()
+        return Response({'user_form': user_form, 'sm_form': sm_form, 'user': data})
 
 class StoreManagerView(APIView):
     renderer_classes = [TemplateHTMLRenderer]
@@ -388,24 +377,19 @@ class StoreManagerView(APIView):
 
     def post(self, request, pk, format=None):
         storemanager = self.get_object(pk)
-        form = DjangoUserEditForm(request.POST)
-        if form.is_valid():
-            data = {
-                'user': {
-                    'first_name': form.cleaned_data['first_name'],
-                    'last_name': form.cleaned_data['last_name'],
-                    'password': form.cleaned_data['password']
-                }
-            }
-
-            if data['user']['password'] != '':
-                storemanager.user.set_password(data['user']['password'])
+        user_form = DjangoUserEditForm({'first_name': request.POST['first_name'], 'last_name': request.POST['last_name'], 'password': request.POST['password'],  'new_password': request.POST['new_password']})
+        sm_form = StoreManagerEditForm(request.FILES)
+        if user_form.is_valid() and sm_form.is_valid():
+            if user_form.cleaned_data['password'] != '':
+                storemanager.user.set_password(user_form.cleaned_data['password'])
                 if request.user == storemanager.user:
                     update_session_auth_hash(request, storemanager.user)
-
-            storemanager.user.first_name = data['user']['first_name']
-            storemanager.user.last_name = data['user']['last_name']
+            storemanager.user.first_name = user_form.cleaned_data['first_name']
+            storemanager.user.last_name = user_form.cleaned_data['last_name']
             storemanager.user.save()
+            if 'image' in request.FILES.keys():
+                storemanager.image = request.FILES['image']
+                storemanager.save()
 
             return redirect('storemanager', pk=pk)
         else:
@@ -502,8 +486,9 @@ class PromotionManagerFormEdit(APIView):
             'is_active': 'Active' if serializer.data['is_active'] else 'Inactive',
             'pk': pk   
         }
-        form = DjangoUserEditForm()
-        return Response({'form': form, 'user': data})
+        user_form = DjangoUserEditForm()
+        pm_form = PromotionManagerEditForm()
+        return Response({'user_form': user_form, 'pm_form': pm_form, 'user': data})
 
 class PromotionManagerView(APIView):
     renderer_classes = [TemplateHTMLRenderer]
@@ -532,24 +517,19 @@ class PromotionManagerView(APIView):
 
     def post(self, request, pk, format=None):
         promotionmanager = self.get_object(pk)
-        form = DjangoUserEditForm(request.POST)
-        if form.is_valid():
-            print form.cleaned_data
-            data = {
-                'user': {
-                    'first_name': form.cleaned_data['first_name'],
-                    'last_name': form.cleaned_data['last_name'],
-                    'password': form.cleaned_data['password']
-                }
-            }
-
-            if data['user']['password'] != '':
-                promotionmanager.user.set_password(data['user']['password'])
+        user_form = DjangoUserEditForm({'first_name': request.POST['first_name'], 'last_name': request.POST['last_name'], 'password': request.POST['password'],  'new_password': request.POST['new_password']})
+        pm_form = PromotionManagerEditForm(request.FILES)
+        if user_form.is_valid() and pm_form.is_valid():
+            if user_form.cleaned_data['password'] != '':
+                promotionmanager.user.set_password(user_form.cleaned_data['password'])
                 if request.user == promotionmanager.user:
                     update_session_auth_hash(request, promotionmanager.user)
-            promotionmanager.user.first_name = data['user']['first_name']
-            promotionmanager.user.last_name = data['user']['last_name']
+            promotionmanager.user.first_name = user_form.cleaned_data['first_name']
+            promotionmanager.user.last_name = user_form.cleaned_data['last_name']
             promotionmanager.user.save()
+            if 'image' in request.FILES.keys():
+                promotionmanager.image = request.FILES['image']
+                promotionmanager.save()
 
             return redirect('promotionmanager', pk=pk)
         else:
@@ -581,9 +561,38 @@ class PromotionManagerView(APIView):
 
 # """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 # """                             Admin                                     """
-# """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""        
+# """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+class AdminFormEdit(APIView):
+    renderer_classes = [TemplateHTMLRenderer]
+    template_name = 'promoapp_user/admin/edit.html'
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly,isCurrentUserAndAdmin)
+
+    def get_object(self, pk):
+        try:
+            obj = Admin.objects.get(pk=pk)
+            self.check_object_permissions(self.request, obj)
+            return obj
+        except Admin.DoesNotExist:
+            raise Http404
+
+    def get(self, request, pk, format=None):
+        admin = self.get_object(pk)
+        serializer = AdminSerializer(admin)
+        data = {
+            'username': serializer.data['user']['username'],
+            'email': serializer.data['email'],
+            'first_name': serializer.data['user']['first_name'],
+            'last_name': serializer.data['user']['last_name'],
+            'pk': pk   
+        }
+        user_form = DjangoUserEditForm()
+        admin_form = AdminEditForm()
+        return Response({'user_form': user_form, 'admin_form': admin_form, 'user': data})
+
 class AdminView(APIView):
-    permission_classes = (permissions.IsAuthenticatedOrReadOnly,isCurrentUserOrAdmin)
+    renderer_classes = [TemplateHTMLRenderer]
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly,isCurrentUserAndAdmin)
+    template_name = 'promoapp_user/admin/admin.html'
 
     def get_object(self, pk):
         try:
@@ -603,6 +612,34 @@ class AdminView(APIView):
             'last_name': serializer.data['user']['last_name']
         }
         return Response({'user': data})
+
+    def post(self, request, pk, format=None):
+        admin = self.get_object(pk)
+        user_form = DjangoUserEditForm({'first_name': request.POST['first_name'], 'last_name': request.POST['last_name'], 'password': request.POST['password'],  'new_password': request.POST['new_password']})
+        pm_form = AdminEditForm(request.FILES)
+        if user_form.is_valid() and pm_form.is_valid():
+            if user_form.cleaned_data['password'] != '':
+                admin.user.set_password(user_form.cleaned_data['password'])
+                if request.user == admin.user:
+                    update_session_auth_hash(request, admin.user)
+            admin.user.first_name = user_form.cleaned_data['first_name']
+            admin.user.last_name = user_form.cleaned_data['last_name']
+            admin.user.save()
+            if 'image' in request.FILES.keys():
+                admin.image = request.FILES['image']
+                admin.save()
+
+            return redirect('admin', pk=pk)
+        else:
+            serializer = AdminSerializer(admin)
+            data = {
+                'username': serializer.data['user']['username'],
+                'email': serializer.data['email'],
+                'first_name': serializer.data['user']['first_name'],
+                'last_name': serializer.data['user']['last_name'],
+                'pk': pk
+            }
+            return render(request, 'promoapp_user/admin/edit.html', {'form': form, 'user': data})
 
     def put(self, request, pk, format=None):
         admin = self.get_object(pk)

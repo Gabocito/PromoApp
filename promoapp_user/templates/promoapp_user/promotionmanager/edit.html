@@ -20,24 +20,12 @@
   Edit
 {% endblock %}
 
-{% block form_errors %}
-  {% if form.errors %}
-    <div class="alert alert-error">
-      <button type="button" class="close" data-dismiss="alert">×</button>
-      {% for field in form %} 
-        {% if field.errors %}
-        <li>{{ field.label }}: {{ field.errors|striptags }}</li>
-        {% endif %}
-      {% endfor %}
-    </div>
-  {% endif %}
-{% endblock %}
-
 {% block form %}
-  <form role="form" action="{% url 'promotionmanager' pk=user.pk %}" method="post">
+  <form role="form" action="{% url 'promotionmanager' pk=user.pk %}" method="post" enctype="multipart/form-data">
     {% csrf_token %}
     <div class="box-body">
-      {{ form.non_field_errors }}
+      {{ user_form.non_field_errors }}
+      {{ pm_form.non_field_errors }}
       <div class="form-group">
         <label>Username</label>
         <div class="input-group">
@@ -57,34 +45,39 @@
         </div>
       </div>
       <div class="form-group">
-        {{ form.first_name.errors }}
-        <label for="{{ form.first_name.id_for_label }}">Name</label>
-        {{ form.first_name }}
+        {{ user_form.first_name.errors }}
+        <label for="{{ user_form.first_name.id_for_label }}">Name</label>
+        {{ user_form.first_name }}
       </div>
       <div class="form-group">
-        {{ form.last_name.errors }}
-        <label for="{{ form.last_name.id_for_label }}">Last Name</label>
-        {{ form.last_name }}
+        {{ user_form.last_name.errors }}
+        <label for="{{ user_form.last_name.id_for_label }}">Last Name</label>
+        {{ user_form.last_name }}
       </div>
       <div class="form-group">
-        {{ form.password.errors }}
-        <label for="{{ form.password.id_for_label }}">Password</label>
+        {{ user_form.password.errors }}
+        <label for="{{ user_form.password.id_for_label }}">Password</label>
         <div class="input-group">
           <div class="input-group-addon">
             <i class="fa fa-lock"></i>
           </div>
-          {{ form.password }}
+          {{ user_form.password }}
         </div>
       </div>
       <div class="form-group">
-        {{ form.new_password.errors }}
-        <label for="{{ form.new_password.id_for_label }}">Repeat Password</label>
+        {{ user_form.new_password.errors }}
+        <label for="{{ user_form.new_password.id_for_label }}">Repeat Password</label>
         <div class="input-group">
           <div class="input-group-addon">
             <i class="fa fa-lock"></i>
           </div>
-          {{ form.new_password }}
+          {{ user_form.new_password }}
         </div>
+      </div>
+      <div class="form-group">
+        {{ pm_form.image.errors }}
+        <label for="{{ pm_form.image.id_for_label }}">Profile Image</label>
+        {{ pm_form.image }}
       </div>
     </div>
     <!-- /.box-body -->

@@ -1,0 +1,100 @@
+{% extends 'form.html' %}
+
+{% block header %}
+  Admin
+{% endblock %}
+
+{% block header_small %}
+  Edit
+{% endblock %}
+
+{% block section %}
+  <a href="">Users</a>
+{% endblock %}
+
+{% block subsection %}
+  <a href="">Admin</a>
+{% endblock %}
+
+{% block sub_subsection %}
+  Edit
+{% endblock %}
+
+{% block form %}
+  <form role="form" action="{% url 'admin' pk=user.pk %}" method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    <div class="box-body">
+      {{ user_form.non_field_errors }}
+      {{ admin_form.non_field_errors }}
+      <div class="form-group">
+        <label>Username</label>
+        <div class="input-group">
+          <div class="input-group-addon">
+            <i class="fa fa-user"></i>
+          </div>
+          <input type="text" class="form-control" value="{{ user.username }}" disabled>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Email</label>
+        <div class="input-group">
+          <div class="input-group-addon">
+            <i class="fa fa-envelope"></i>
+          </div>
+          <input type="email" class="form-control" value="{{ user.email }}" disabled>
+        </div>
+      </div>
+      <div class="form-group">
+        {{ user_form.first_name.errors }}
+        <label for="{{ user_form.first_name.id_for_label }}">Name</label>
+        {{ user_form.first_name }}
+      </div>
+      <div class="form-group">
+        {{ user_form.last_name.errors }}
+        <label for="{{ user_form.last_name.id_for_label }}">Last Name</label>
+        {{ user_form.last_name }}
+      </div>
+      <div class="form-group">
+        {{ user_form.password.errors }}
+        <label for="{{ user_form.password.id_for_label }}">Password</label>
+        <div class="input-group">
+          <div class="input-group-addon">
+            <i class="fa fa-lock"></i>
+          </div>
+          {{ user_form.password }}
+        </div>
+      </div>
+      <div class="form-group">
+        {{ user_form.new_password.errors }}
+        <label for="{{ user_form.new_password.id_for_label }}">Repeat Password</label>
+        <div class="input-group">
+          <div class="input-group-addon">
+            <i class="fa fa-lock"></i>
+          </div>
+          {{ user_form.new_password }}
+        </div>
+      </div>
+      <div class="form-group">
+        {{ admin_form.image.errors }}
+        <label for="{{ admin_form.image.id_for_label }}">Profile Image</label>
+        {{ admin_form.image }}
+      </div>
+    </div>
+    <!-- /.box-body -->
+    <div class="box-footer">
+      <button type="submit" class="btn btn-primary">Edit</button>
+    </div>
+  </form>
+{% endblock %}
+
+{% block form_script %}
+  <script>
+    $(document).ready(function(){
+      $('#id_password').attr("type", "password");
+      $('#id_new_password').attr("type", "password");
+      $('#id_first_name').attr("value", "{{ user.first_name }}");
+      $('#id_last_name').attr("value", "{{ user.last_name }}");
+    });
+  </script>
+{% endblock %}
+

@@ -100,3 +100,30 @@ class PromotionManagerForm(ModelForm):
             raise forms.ValidationError("This email address is already registered!")
 
         return email
+
+class StoreManagerEditForm(ModelForm):
+    class Meta:
+        model = StoreManager
+        fields = ['image']
+
+    def __init__(self, *args, **kwargs):
+        super(StoreManagerEditForm, self).__init__(*args, **kwargs)
+        self.fields['image'].required = False
+
+class PromotionManagerEditForm(ModelForm):
+    class Meta:
+        model = PromotionManager
+        fields = ['image']
+
+    def __init__(self, *args, **kwargs):
+        super(PromotionManagerEditForm, self).__init__(*args, **kwargs)
+        self.fields['image'].required = False
+
+class AdminEditForm(ModelForm):
+    class Meta:
+        model = Admin
+        fields = ['image']
+
+    def __init__(self, *args, **kwargs):
+        super(AdminEditForm, self).__init__(*args, **kwargs)
+        self.fields['image'].required = False

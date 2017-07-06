@@ -28,4 +28,5 @@ urlpatterns = [
     url(r'^promotionmanagers/(?P<pk>[0-9]+)/edit/status/$', PromotionManagerEditStatus.as_view(), name='promotionmanager-edit-status'),
     url(r'^promotionmanagers/(?P<pk>[0-9]+)/delete/$', PromotionManagerDelete.as_view(), name='promotionmanager-delete'),
     url(r'^admins/(?P<pk>[0-9]+)/$', AdminView.as_view(), name='admin'),
+    url(r'^admins/(?P<pk>[0-9]+)/edit/$', AdminFormEdit.as_view(), name='admin-edit'),
 ]
